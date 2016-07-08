@@ -1,0 +1,13 @@
+.DS_Store
+target
+.settings
+.shell_history
+.project
+.classpath
+/.idea
+/scm/neo4jserver/neo4j-home/
+*~
+*.iml
+*.eml
+*.log
+*.userlibraries

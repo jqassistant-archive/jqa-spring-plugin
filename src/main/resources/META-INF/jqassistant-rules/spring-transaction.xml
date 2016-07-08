@@ -1,0 +1,30 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.1">
+
+    <constraint id="spring-transaction:TransactionMethodMustNotBeCalledDirectly">
+        <requiresConcept refId="spring-transaction:TransactionalMethod"/>
+        <description>Methods annotated with @Transaction must not be called directly within the same class.</description>
+        <cypher><![CDATA[
+            MATCH
+              (class:Type)-[:DECLARES]->(method:Transactional:Method),
+              (class:Type)-[:DECLARES]->(callingMethod:Method),
+              (callingMethod:Method)-[:INVOKES]->(method)
+            RETURN
+              method as TransactionalMethod, class as Class
+        ]]></cypher>
+    </constraint>
+    
+    <concept id="spring-transaction:TransactionalMethod">
+        <description>Labels a method which is annotated with @Transactional with "Transactional".</description>
+        <cypher><![CDATA[
+           MATCH
+              (transactionalMethod:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+            WHERE
+              annotationType.fqn = "org.springframework.transaction.annotation.Transactional"
+            SET
+              transactionalMethod:Transactional
+            RETURN
+              transactionalMethod as TransactionalMethod
+        ]]></cypher>
+    </concept>
+    
+ </jqa:jqassistant-rules>

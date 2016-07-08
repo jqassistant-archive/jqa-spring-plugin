@@ -1,0 +1,73 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.1">
+    
+    <concept id="spring-injection:Injectable">
+        <requiresConcept refId="spring-injection:Component"/>
+        <requiresConcept refId="spring-injection:BeanMethod"/>
+        <description>Returns all injectables.</description>
+        <cypher><![CDATA[
+            MATCH
+              (injectable:Spring:Injectable)
+            RETURN
+              injectable as Injectable
+        ]]></cypher>
+    </concept>
+    
+    <concept id="spring-injection:Component">
+        <requiresConcept refId="spring-mvc:Service"/>
+        <requiresConcept refId="spring-mvc:Controller"/>
+        <requiresConcept refId="spring-data:Repository"/>
+        <description>Returns all Spring Components, i.e. all types labeled with "Spring" and "Component", sets a label "Injectable".</description>
+        <cypher><![CDATA[
+            MATCH
+              (component:Spring:Component)
+            SET
+              component:Spring:Injectable
+            RETURN
+              component as Component
+        ]]></cypher>
+    </concept>
+    
+     <concept id="spring-injection:BeanMethod">
+        <requiresConcept refId="spring-injection:Configuration"/>
+        <description>Labels a Return value of a method, thats annotated with "Bean" with Injectable</description>
+        <cypher><![CDATA[
+           MATCH
+              (configuration:Configuration)-[:DECLARES]->(method:Java:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type),
+              (method)-[:RETURNS]->(injectable:Type)
+            WHERE
+              annotationType.fqn = "org.springframework.context.annotation.Bean"
+            SET
+              injectable:Spring:Injectable
+            RETURN
+              injectable as Injectable
+        ]]></cypher>
+    </concept> 
+    
+    <concept id="spring-injection:Configuration">
+        <description>Labels all types annotated with "org.springframework.context.annotation.Configuration" with "Spring", "Configuration" and "Component".</description>
+        <cypher><![CDATA[
+             MATCH
+              (configuration:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+            WHERE
+              annotationType.fqn = "org.springframework.context.annotation.Configuration"
+            SET
+              configuration:Spring:Configuration:Component
+            RETURN
+              configuration as Configuration
+        ]]></cypher>
+    </concept>
+   
+     <constraint id="spring-injection:InjectablesMustNotBeInstantiated">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Injectables must not be initiated.</description>
+        <cypher><![CDATA[
+            MATCH
+              (injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
+              (type:Type)-[:DECLARES]->(method:Method)-[newInstance:INVOKES]->(constructor)            
+            RETURN
+              type as Type, method as Method, injectable as Injectable,
+              newInstance.lineNumber as LineNumber
+        ]]></cypher>
+    </constraint>
+
+</jqa:jqassistant-rules>
