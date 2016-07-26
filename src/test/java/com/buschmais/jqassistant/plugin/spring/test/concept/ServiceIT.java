@@ -24,7 +24,7 @@ public class ServiceIT extends AbstractJavaPluginIT {
         assertThat(applyConcept("spring-mvc:Service").getStatus(), equalTo(SUCCESS));
        
         store.beginTransaction();
-        assertThat(query("MATCH (r:Spring:Service) RETURN r").getColumn("r"), hasItem(typeDescriptor(TestService.class)));
+        assertThat(query("MATCH (r:Spring:Component) RETURN r").getColumn("r"), hasItem(typeDescriptor(TestService.class)));
         store.commitTransaction();
     }
 

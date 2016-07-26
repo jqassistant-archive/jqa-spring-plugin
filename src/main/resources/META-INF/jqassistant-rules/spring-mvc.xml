@@ -13,6 +13,7 @@
               service as Service
         ]]></cypher>
     </concept>
+    
     <concept id="spring-mvc:Controller">
         <description>Labels all types annotated with "org.springframework.stereotype.Controller" with "Spring", "Controller" and "Component".</description>
         <cypher><![CDATA[
@@ -26,5 +27,74 @@
               controller as Controller
         ]]></cypher>
     </concept>
+    
+    <concept id="spring-mvc:BusinessInterface">
+        <description>Labels all interfaces which are part of the application as "BusinessInterface".</description>
+        <cypher><![CDATA[
+            MATCH
+              (artifact:Artifact),
+              (artifact)-[:CONTAINS]->(interface:Interface)
+            SET
+              interface:BusinessInterface
+            RETURN
+              interface as Interface
+        ]]></cypher>
+    </concept> 
+    
+    <constraint id="spring-mvc:ComponentsMustNotImplementSpringInterface">
+        <requiresConcept refId="spring-mvc:BusinessInterface"/>
+        <requiresConcept refId="spring-injection:Component"/>
+        <description>Application Components must not implement Spring Interfaces.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:IMPLEMENTS]->(otherType:Type)
+            WHERE NOT
+              otherType:BusinessInterface
+            RETURN
+              type as Component,otherType as Interface
+        ]]></cypher>
+    </constraint>
+  
+    <constraint id="spring-mvc:InjectablesMustBePackageProtected">
+        <requiresConcept refId="spring-injection:InjectedField"/>
+        <requiresConcept refId="spring-mvc:BusinessInterface"/>
+        <description>Injected Components must always be package protected.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:DECLARES]->(field:InjectedField)-[:OF_TYPE]->(otherType)-[:IMPLEMENTS]->(:BusinessInterface)
+            WHERE NOT
+              field.visibility = "protected"
+            RETURN
+              type as Type, field as Field 
+        ]]></cypher>
+    </constraint>
+    
+    <concept id="spring-mvc:ConstructorField">
+        <description>labels a Field, that is written by a constructor with "ConstructorField".</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:DECLARES]->(:Constructor)-[:WRITES]->(constructorField:Field)
+            SET
+              constructorField:ConstructorField
+            RETURN
+              constructorField as Constructor
+        ]]></cypher>
+    </concept>
+    
+    <constraint id="spring-mvc:ConstructorFieldsMustNotBeManipulated">
+        <requiresConcept refId="spring-mvc:ConstructorField"/>
+        <description>Fields that are written by a constructor must not be manipulated by other methods.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:DECLARES]->(constructor:Constructor)-[:WRITES]->(constructorField:Field),
+              (type)-[:DECLARES]->(method:Method)-[:WRITES]->(constructorField:Field)
+            WHERE
+              method <> constructor
+            RETURN
+              type as Component, method as Method, constructorField as Field, method.lineNumber as LineNumber
+        ]]></cypher>
+    </constraint>
+    
+    
 
 </jqa:jqassistant-rules>

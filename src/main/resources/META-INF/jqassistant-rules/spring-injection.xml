@@ -56,6 +56,19 @@
               configuration as Configuration
         ]]></cypher>
     </concept>
+     <concept id="spring-injection:InjectedField">
+        <description>Labels all fields annotated with "org.springframework.beans.factory.annotation.Autowired" with "Spring" and "InjectedField".</description>
+        <cypher><![CDATA[
+            MATCH
+              (field:Field)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+            WHERE
+              annotationType.fqn = "org.springframework.beans.factory.annotation.Autowired"
+            SET
+              field:Spring:InjectedField
+            RETURN
+              field as Field
+        ]]></cypher>
+    </concept>
    
      <constraint id="spring-injection:InjectablesMustNotBeInstantiated">
         <requiresConcept refId="spring-injection:Injectable"/>
@@ -67,6 +80,30 @@
             RETURN
               type as Type, method as Method, injectable as Injectable,
               newInstance.lineNumber as LineNumber
+        ]]></cypher>
+    </constraint>
+    
+     <constraint id="spring-injection:NoFieldInjectionInConfiguration">
+        <requiresConcept refId="spring-injection:Configuration"/>
+        <requiresConcept refId="spring-injection:InjectedField"/>
+        <description>Classes, annotated with @Configuration must not have field-injection.</description>
+        <cypher><![CDATA[
+            MATCH
+              (configuration:Configuration)-[:DECLARES]->(field:InjectedField)            
+            RETURN
+              configuration as Configuration, field as Field
+        ]]></cypher>
+    </constraint>
+    
+     <constraint id="spring-injection:NoFieldInjectionInComponent">
+        <requiresConcept refId="spring-injection:Configuration"/>
+        <requiresConcept refId="spring-injection:InjectedField"/>
+        <description>Classes, annotated with @Component must not have field-injection.</description>
+        <cypher><![CDATA[
+            MATCH
+              (component:Spring:Component)-[:DECLARES]->(field:InjectedField)            
+            RETURN
+              component as Component, field as Field
         ]]></cypher>
     </constraint>
 

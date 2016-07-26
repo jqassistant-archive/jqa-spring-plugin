@@ -23,7 +23,8 @@
               (artifact)-[:CONTAINS]->(applicationPackage:Package)-[:CONTAINS]->(application:Spring:Application),
               (artifact)-[:CONTAINS]->(type:Type)
             WHERE NOT
-              (applicationPackage)-[:CONTAINS*0..]->(type)             
+              (applicationPackage)-[:CONTAINS]->(type) AND
+              type:Spring:Application             
             RETURN
               application as Application, applicationPackage as ApplicationPackage, collect(type.fqn) as TypesOutsideApplicationPackage
         ]]></cypher>

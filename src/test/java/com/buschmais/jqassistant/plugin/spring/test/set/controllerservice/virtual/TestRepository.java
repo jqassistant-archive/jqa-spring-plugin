@@ -1,4 +1,4 @@
-package com.buschmais.jqassistant.plugin.spring.test.set.controllerrepository;
+package com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.virtual;
 
 import org.springframework.stereotype.Repository;
 
