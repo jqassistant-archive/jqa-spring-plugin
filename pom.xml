@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>spring</artifactId>
-    <version>0.0.1</version>
+    <version>1.2.0-SNAPSHOT</version>
     <name>jQAssistant Spring Framework Plugin</name>
 
     <organization>
@@ -27,100 +27,53 @@
 
 
     <properties>
+        <jqa.core-framework.version>1.2.0-SNAPSHOT</jqa.core-framework.version>
+        <jqa.java-plugin.version>1.2.0-SNAPSHOT</jqa.java-plugin.version>
         <org.springframework.version>3.0.0.RELEASE</org.springframework.version>
     </properties>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-asciidoc-stylesheets</id>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>xml-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>transform-xml2asciidoc</id>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-asciidoc</id>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.buschmais.jqassistant.plugin</groupId>
-                <artifactId>jqassistant.plugin.bom</artifactId>
-                <type>pom</type>
-                <scope>import</scope>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
-            <groupId>com.buschmais.jqassistant.plugin</groupId>
-            <artifactId>jqassistant.plugin.common</artifactId>
-            <type>xsl</type>
-            <classifier>plugin2asciidoc</classifier>
-        </dependency>
-        <dependency>
-            <groupId>com.buschmais.jqassistant.plugin</groupId>
-            <artifactId>jqassistant.plugin.common</artifactId>
-            <type>xsl</type>
-            <classifier>rules2asciidoc</classifier>
-        </dependency>
-        <dependency>
             <groupId>com.buschmais.jqassistant.core</groupId>
-            <artifactId>jqassistant.core.scanner</artifactId>
+            <artifactId>scanner</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.buschmais.jqassistant.core</groupId>
-            <artifactId>jqassistant.core.plugin</artifactId>
+            <artifactId>plugin</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.buschmais.jqassistant.plugin</groupId>
-            <artifactId>jqassistant.plugin.java</artifactId>
+            <artifactId>java</artifactId>
+            <version>${jqa.java-plugin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.buschmais.jqassistant.plugin</groupId>
-            <artifactId>jqassistant.plugin.common</artifactId>
+            <artifactId>common</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
             <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>com.buschmais.jqassistant.core</groupId>
-            <artifactId>jqassistant.core.store</artifactId>
+            <artifactId>store</artifactId>
             <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>com.buschmais.jqassistant.core</groupId>
-            <artifactId>jqassistant.core.analysis</artifactId>
+            <artifactId>analysis</artifactId>
             <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>com.buschmais.jqassistant.plugin</groupId>
             <artifactId>jqassistant.plugin.java</artifactId>
+            <version>${jqa.java-plugin.version}</version>
             <type>test-jar</type>
         </dependency>
         <dependency>
@@ -129,7 +82,7 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
+            <artifactId>java-hamcrest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
