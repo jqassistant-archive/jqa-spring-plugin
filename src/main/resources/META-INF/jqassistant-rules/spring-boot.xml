@@ -1,5 +1,19 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.1">
-    
+
+    <group id="spring-boot:Default">
+        <includeConstraint refId="AllTypesInApplicationPackage"/>
+        <includeGroup refId="spring-component:Default" />
+        <includeGroup refId="spring-injection:Default" />
+        <includeGroup refId="spring-transaction:Default" />
+    </group>
+
+    <group id="spring-boot:Strict">
+        <includeGroup refId="spring-boot:Default" />
+        <includeGroup refId="spring-component:Strict" />
+        <includeGroup refId="spring-injection:Strict" />
+    </group>
+
+
     <concept id="spring-boot:Application">
         <description>Labels all Spring Boot Applications with "Spring" and "Application".</description>
         <cypher><![CDATA[
@@ -8,26 +22,27 @@
             WHERE
               annotationType.fqn = "org.springframework.boot.autoconfigure.SpringBootApplication"
             SET
-              application:Spring:Application
+              application:Spring:Boot:Application
             RETURN
               application as Application
         ]]></cypher>
     </concept>
-    
-     <constraint id="spring-boot:NoTypesOutsideApplicationPackage">
+
+    <constraint id="spring-boot:AllTypesInApplicationPackage">
         <requiresConcept refId="spring-boot:Application"/>
-        <description>There are no types allowed outside of the application package.</description>
+        <description>All types of of a Spring Boot application must be located in the same package or a sub-package of
+            the application class.
+        </description>
         <cypher><![CDATA[
             MATCH
               (artifact:Artifact),
-              (artifact)-[:CONTAINS]->(applicationPackage:Package)-[:CONTAINS]->(application:Spring:Application),
-              (artifact)-[:CONTAINS]->(type:Type)
+              (artifact)-[:CONTAINS]->(applicationPackage:Package)-[:CONTAINS]->(application:Spring:Boot:Application),
+              (artifact)-[:CONTAINS]->(package:Package)-[:CONTAINS]->(type:Type)
             WHERE NOT
-              (applicationPackage)-[:CONTAINS]->(type) AND
-              type:Spring:Application             
+              (applicationPackage)-[:CONTAINS*0..]->(package)
             RETURN
-              application as Application, applicationPackage as ApplicationPackage, collect(type.fqn) as TypesOutsideApplicationPackage
+              application as Application, applicationPackage as ApplicationPackage, collect(type) as TypesOutsideApplicationPackage
         ]]></cypher>
     </constraint>
-    
+
 </jqa:jqassistant-rules>

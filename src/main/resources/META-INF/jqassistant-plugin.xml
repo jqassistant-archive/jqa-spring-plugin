@@ -2,12 +2,10 @@
                                name="Custom Rules">
     <description>Example plugin defining a set of custom rules.</description>
     <rules>
-        <resource>spring-data.xml</resource>
-        <resource>spring-mvc.xml</resource>
         <resource>spring-boot.xml</resource>
+        <resource>spring-component.xml</resource>
+        <resource>spring-data.xml</resource>
         <resource>spring-injection.xml</resource>
-        <resource>spring-layer.xml</resource>
         <resource>spring-transaction.xml</resource>
     </rules>
 </jqa-plugin:jqassistant-plugin>
-

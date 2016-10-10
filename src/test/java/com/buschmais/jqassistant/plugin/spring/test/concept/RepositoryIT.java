@@ -11,51 +11,33 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.RepositoryImpl;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.TestAnnotatedRepository;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.TestImplementedRepository;
 
-public class RepositoryIT extends AbstractJavaPluginIT {
+public class RepositoryIT extends AbstractSpringIT {
     
     @Test
     public void annotatedRepository() throws Exception {
-        scanClasses(RepositoryImpl.class);
+        scanClasses(TestImplementedRepository.class);
         assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(FAILURE));
         clearConcepts();
-        scanClasses(AnnotatedRepository.class);
+        scanClasses(TestAnnotatedRepository.class);
         assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(SUCCESS));
        
         store.beginTransaction();
-        assertThat(query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r"), hasItem(typeDescriptor(AnnotatedRepository.class)));
+        assertThat(query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r"), hasItem(typeDescriptor(TestAnnotatedRepository.class)));
         store.commitTransaction();
     }
 
     @Test
     public void implementedRepository() throws Exception {
-        scanClasses(AnnotatedRepository.class);
+        scanClasses(TestAnnotatedRepository.class);
         assertThat(applyConcept("spring-data:ImplementedRepository").getStatus(), equalTo(FAILURE));
         clearConcepts();
-        scanClasses(RepositoryImpl.class);
+        scanClasses(TestImplementedRepository.class);
         assertThat(applyConcept("spring-data:ImplementedRepository").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
-        assertThat(query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r"), hasItem(typeDescriptor(RepositoryImpl.class)));
+        assertThat(query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r"), hasItem(typeDescriptor(TestImplementedRepository.class)));
         store.commitTransaction();
     }
-    
-    @Test
-    public void repository() throws Exception {
-        scanClasses(AnnotatedRepository.class,RepositoryImpl.class);
-        assertThat(applyConcept("spring-data:Repository").getStatus(), equalTo(SUCCESS));
-        store.beginTransaction();
-        List<Object> repositories = query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r");
-        assertThat(repositories, hasItem(typeDescriptor(AnnotatedRepository.class)));
-        assertThat(repositories, hasItem(typeDescriptor(RepositoryImpl.class)));
-        store.commitTransaction();
-    }
-
-    private void clearConcepts() {
-        store.beginTransaction();
-        query("MATCH (c:Concept) DELETE c");
-        store.commitTransaction();
-    }    
 }

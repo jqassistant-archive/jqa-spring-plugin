@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -9,6 +9,7 @@
         <version>1.2.0-SNAPSHOT</version>
     </parent>
 
+    <groupId>com.buschmais.jqassistant.plugin</groupId>
     <artifactId>spring</artifactId>
     <version>1.2.0-SNAPSHOT</version>
     <name>jQAssistant Spring Framework Plugin</name>
@@ -30,6 +31,8 @@
         <jqa.core-framework.version>1.2.0-SNAPSHOT</jqa.core-framework.version>
         <jqa.java-plugin.version>1.2.0-SNAPSHOT</jqa.java-plugin.version>
         <org.springframework.version>3.0.0.RELEASE</org.springframework.version>
+        <org.springframework.boot_version>1.3.3.RELEASE</org.springframework.boot_version>
+        <org.springframework.data_version>1.9.4.RELEASE</org.springframework.data_version>
     </properties>
 
     <build>
@@ -93,33 +96,30 @@
             <artifactId>slf4j-simple</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>4.3.0.RELEASE</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.9.4.RELEASE</version>
+            <version>${org.springframework.data_version}</version>
+            <scope>test</scope>
         </dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-autoconfigure</artifactId>
-    <version>1.3.3.RELEASE</version>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot</artifactId>
-    <version>1.3.3.RELEASE</version>
-</dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-dependencies</artifactId>
-    <version>1.3.3.RELEASE</version>
-    <type>pom</type>
-</dependency>
-        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${org.springframework.boot_version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>${org.springframework.boot_version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>${org.springframework.boot_version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -132,6 +132,5 @@
             </snapshots>
         </repository>
     </repositories>
-
-
+    
 </project>

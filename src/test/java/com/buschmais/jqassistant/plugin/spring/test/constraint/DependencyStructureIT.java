@@ -1,9 +1,12 @@
 package com.buschmais.jqassistant.plugin.spring.test.constraint;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.*;
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.core.analysis.test.matcher.ConstraintMatcher.constraint;
 import static com.buschmais.jqassistant.core.analysis.test.matcher.ResultMatcher.result;
+import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -14,67 +17,88 @@ import org.junit.Test;
 
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
+import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerrepository.direct.ControllerWithRepository;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerrepository.virtual.ControllerWithRepositorInterface;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerrepository.virtual.RepositoryInterface;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.direct.ControllerWithService;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.virtual.ControllerWithServiceInterface;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.virtual.ServiceInterface;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerservicerepository.ControllerWithServiceAndRepository;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerservicerepository.TestRepository;
-import com.buschmais.jqassistant.plugin.spring.test.set.controllerservicerepository.TestService;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.*;
 
 public class DependencyStructureIT extends AbstractJavaPluginIT {
 
     @Test
-    public void dependencyStructure() throws Exception {
-        scanClasses(ControllerWithServiceAndRepository.class, TestService.class, TestRepository.class);
-        assertThat(validateConstraint("spring-layer:ControllerMustNotDependOnRepositoryUsedByService").getStatus(), equalTo(FAILURE));
+    public void controllerDependsOnService() throws Exception {
+        scanClasses(TestController1.class, TestService1.class);
+        assertThat(validateConstraint("spring-component:ControllerMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
+    }
+
+    @Test
+    public void controllerDependsRepository() throws Exception {
+        scanClasses(TestControllerWithRepositoryDependency.class, TestRepository1.class);
+        assertThat(validateConstraint("spring-component:ControllerMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
+    }
+
+    @Test
+    public void controllerDependsOnController() throws Exception {
+        scanClasses(TestControllerWithControllerDependency.class, TestController1.class);
+        verifyConstraintViolation("spring-component:ControllerMustOnlyDependOnServicesOrRepositories", "Controller", TestControllerWithControllerDependency.class,
+                TestController1.class);
+    }
+
+    @Test
+    public void controllerDependsOnServiceAndRepository() throws Exception {
+        scanClasses(TestControllerWithServiceAndRepositoryDependency.class, TestService1.class, TestRepository1.class);
+        assertThat(validateConstraint("spring-component:ControllerMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
+    }
+
+    @Test
+    public void controllerDependsEitherOnServiceOrRepository() throws Exception {
+        scanClasses(TestControllerWithServiceAndRepositoryDependency.class, TestService1.class, TestRepository1.class);
+        verifyConstraintViolation("spring-component:ControllerMustDependEitherOnServicesOrRepositories", "Controller",
+                TestControllerWithServiceAndRepositoryDependency.class, TestService1.class, TestRepository1.class);
+    }
+
+    @Test
+    public void serviceDependsOnServiceAndRepository() throws Exception {
+        scanClasses(TestController1.class, TestService1.class, TestService2.class, TestRepository1.class);
+        assertThat(validateConstraint("spring-component:ServiceMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
+    }
+
+    @Test
+    public void repositoryDependsOnRepository() throws Exception {
+        scanClasses(TestRepository1.class, TestRepository2.class);
+        assertThat(validateConstraint("spring-component:RepositoryMustOnlyDependOnRepositories").getStatus(), equalTo(SUCCESS));
+    }
+
+    @Test
+    public void repositoryDependsOnController() throws Exception {
+        scanClasses(TestRepositoryWithControllerDependency.class, TestController1.class);
+        verifyConstraintViolation("spring-component:RepositoryMustOnlyDependOnRepositories", "Repository", TestRepositoryWithControllerDependency.class,
+                TestController1.class);
+    }
+
+    @Test
+    public void repositoryDependsOnService() throws Exception {
+        scanClasses(TestRepositoryWithServiceDependency.class, TestService1.class);
+        verifyConstraintViolation("spring-component:RepositoryMustOnlyDependOnRepositories", "Repository", TestRepositoryWithServiceDependency.class,
+                TestService1.class);
+    }
+
+    private void verifyConstraintViolation(String constraintId, String componentColumn, Class<?> component, Class<?>... dependencies) throws Exception {
+        assertThat(validateConstraint(constraintId).getStatus(), equalTo(FAILURE));
         store.beginTransaction();
         List<Result<Constraint>> constraintViolations = new ArrayList<>(reportWriter.getConstraintResults().values());
         assertThat(constraintViolations.size(), equalTo(1));
         Result<Constraint> result = constraintViolations.get(0);
-        assertThat(result, result(constraint("spring-layer:ControllerMustNotDependOnRepositoryUsedByService")));
+        assertThat(result, result(constraint(constraintId)));
         List<Map<String, Object>> rows = result.getRows();
         assertThat(rows.size(), equalTo(1));
+        Map<String, Object> row = rows.get(0);
+        TypeDescriptor repository = (TypeDescriptor) row.get(componentColumn);
+        assertThat(repository, typeDescriptor(component));
+        List<TypeDescriptor> invalidDependencies = (List<TypeDescriptor>) row.get("InvalidDependencies");
+        assertThat(invalidDependencies.size(), equalTo(dependencies.length));
+        for (Class<?> dependency : dependencies) {
+            assertThat(invalidDependencies, hasItem(typeDescriptor(dependency)));
+        }
         store.commitTransaction();
     }
 
-    @Test
-    public void dependencyStructureRepository() throws Exception {
-        scanClasses(ControllerWithRepository.class, com.buschmais.jqassistant.plugin.spring.test.set.controllerrepository.direct.TestRepository.class);
-        assertThat(validateConstraint("spring-layer:ControllerMustNotDependOnRepositoryUsedByService").getStatus(), equalTo(SUCCESS));
-    }
-
-    @Test
-    public void dependencyStructureRepositoryVirtual() throws Exception {
-        scanClasses(ControllerWithRepositorInterface.class, RepositoryInterface.class, com.buschmais.jqassistant.plugin.spring.test.set.controllerrepository.virtual.TestRepository.class);
-        assertThat(validateConstraint("spring-layer:ControllerMustNotDependOnRepositoryUsedByService").getStatus(), equalTo(SUCCESS));
-    }
-
-    @Test
-    public void dependencyStructureService() throws Exception {
-        scanClasses(ControllerWithService.class, com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.direct.TestService.class, com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.direct.TestRepository.class);
-        assertThat(validateConstraint("spring-layer:ControllerMustNotDependOnRepositoryUsedByService").getStatus(), equalTo(SUCCESS));
-    }
-    @Test
-    public void dependencyStructureServiceVirtual() throws Exception {
-        scanClasses(ControllerWithServiceInterface.class, com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.virtual.TestService.class, com.buschmais.jqassistant.plugin.spring.test.set.controllerservice.virtual.TestRepository.class, ServiceInterface.class);
-        assertThat(validateConstraint("spring-layer:ControllerMustNotDependOnRepositoryUsedByService").getStatus(), equalTo(SUCCESS));
-    }
-
-    @Test
-    public void dependencyStructureStrong() throws Exception {
-        scanClasses(ControllerWithServiceAndRepository.class, TestService.class, TestRepository.class);
-        assertThat(validateConstraint("spring-layer:ControllerMustDependEitherOnServicesOrRepositories").getStatus(), equalTo(FAILURE));
-        store.beginTransaction();
-        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportWriter.getConstraintResults().values());
-        assertThat(constraintViolations.size(), equalTo(1));
-        Result<Constraint> result = constraintViolations.get(0);
-        assertThat(result, result(constraint("spring-layer:ControllerMustDependEitherOnServicesOrRepositories")));
-        List<Map<String, Object>> rows = result.getRows();
-        assertThat(rows.size(), equalTo(1));
-        store.commitTransaction();
-    }
 }

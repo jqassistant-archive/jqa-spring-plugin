@@ -1,30 +1,58 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.1">
 
-    <constraint id="spring-transaction:TransactionMethodMustNotBeCalledDirectly">
+    <group id="spring-transaction:Default">
+        <includeConstraint refId="spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass"/>
+    </group>
+
+    <constraint id="spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass">
         <requiresConcept refId="spring-transaction:TransactionalMethod"/>
-        <description>Methods annotated with @Transaction must not be called directly within the same class.</description>
+        <description>Transactional methods must not be called directly within the same class.</description>
         <cypher><![CDATA[
             MATCH
-              (class:Type)-[:DECLARES]->(method:Transactional:Method),
-              (class:Type)-[:DECLARES]->(callingMethod:Method),
-              (callingMethod:Method)-[:INVOKES]->(method)
+              (type:Type)-[:DECLARES]->(method:Method:Spring:Transactional),
+              (type:Type)-[:DECLARES]->(callingMethod:Method),
+              (callingMethod:Method)-[invokes:INVOKES]->(method)
             RETURN
-              method as TransactionalMethod, class as Class
+              type as Type, method as TransactionalMethod, invokes.lineNumber
         ]]></cypher>
     </constraint>
-    
+
     <concept id="spring-transaction:TransactionalMethod">
-        <description>Labels a method which is annotated with @Transactional with "Transactional".</description>
+        <requiresConcept refId="spring-transaction:TransactionalClass"/>
+        <description>Label all methods which are annotated with
+            "@org.springframework.transaction.annotation.Transactional"
+            with "Spring" and "Transactional".
+        </description>
         <cypher><![CDATA[
            MATCH
-              (transactionalMethod:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
-            WHERE
-              annotationType.fqn = "org.springframework.transaction.annotation.Transactional"
-            SET
-              transactionalMethod:Transactional
-            RETURN
-              transactionalMethod as TransactionalMethod
+             (transactionalMethod:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+           WHERE
+             annotationType.fqn = "org.springframework.transaction.annotation.Transactional"
+           SET
+             transactionalMethod:Spring:Transactional
+           RETURN
+             transactionalMethod as TransactionalMethod
         ]]></cypher>
     </concept>
-    
- </jqa:jqassistant-rules>
+
+    <concept id="spring-transaction:TransactionalClass">
+        <description>Labels a classes which are annotated with
+            "@org.springframework.transaction.annotation.Transactional" and their declared methods with "Spring" and
+            "Transactional".
+        </description>
+        <cypher><![CDATA[
+           MATCH
+             (transactionalClass:Class)-[:EXTENDS*0..]->(:Class)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type),
+             (transactionalClass)-[:DECLARES]->(transactionalMethod:Method)
+           WHERE
+             annotationType.fqn = "org.springframework.transaction.annotation.Transactional"
+             and not transactionalMethod:Constructor
+           SET
+             transactionalClass:Spring:Transactional,
+             transactionalMethod:Spring:Transactional
+           RETURN
+             transactionalClass as TransactionalClass, collect(transactionalMethod) as TransactionalMethods
+        ]]></cypher>
+    </concept>
+
+</jqa:jqassistant-rules>
