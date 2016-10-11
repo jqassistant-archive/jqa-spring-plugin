@@ -8,4 +8,7 @@ public class TransactionalClass {
     public void transactionalMethod(){
     }
 
+    public static void staticMethod() {
+    }
+
 }

@@ -6,22 +6,21 @@
 
     <constraint id="spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass">
         <requiresConcept refId="spring-transaction:TransactionalMethod"/>
-        <description>Transactional methods must not be called directly within the same class.</description>
+        <description>Transactional methods must not be invoked from the same class.</description>
         <cypher><![CDATA[
             MATCH
               (type:Type)-[:DECLARES]->(method:Method:Spring:Transactional),
               (type:Type)-[:DECLARES]->(callingMethod:Method),
               (callingMethod:Method)-[invokes:INVOKES]->(method)
             RETURN
-              type as Type, method as TransactionalMethod, invokes.lineNumber
+              type as Type, method as TransactionalMethod, invokes.lineNumber as LineNumber
         ]]></cypher>
     </constraint>
 
     <concept id="spring-transaction:TransactionalMethod">
         <requiresConcept refId="spring-transaction:TransactionalClass"/>
         <description>Label all methods which are annotated with
-            "@org.springframework.transaction.annotation.Transactional"
-            with "Spring" and "Transactional".
+            "@org.springframework.transaction.annotation.Transactional" with "Spring" and "Transactional".
         </description>
         <cypher><![CDATA[
            MATCH
@@ -42,13 +41,20 @@
         </description>
         <cypher><![CDATA[
            MATCH
-             (transactionalClass:Class)-[:EXTENDS*0..]->(:Class)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type),
-             (transactionalClass)-[:DECLARES]->(transactionalMethod:Method)
+             (transactionalClass:Class)-[:EXTENDS*0..]->(:Class)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
            WHERE
              annotationType.fqn = "org.springframework.transaction.annotation.Transactional"
-             and not transactionalMethod:Constructor
            SET
-             transactionalClass:Spring:Transactional,
+             transactionalClass:Spring:Transactional
+           WITH
+             transactionalClass
+           MATCH
+             (transactionalClass)-[:DECLARES]->(transactionalMethod:Method)
+           WHERE NOT (
+             transactionalMethod:Constructor
+             or (has(transactionalMethod.static) and transactionalMethod.static)
+           )
+           SET
              transactionalMethod:Spring:Transactional
            RETURN
              transactionalClass as TransactionalClass, collect(transactionalMethod) as TransactionalMethods

@@ -5,7 +5,7 @@
         <includeConstraint refId="spring-injection:FieldsInitializedByConstructorMustNotBeManipulated"/>
     </group>
 
-    <group id="spring:injection:Strict">
+    <group id="spring-injection:Strict">
         <includeConstraint refId="spring-injection:FieldInjectionIsNotAllowed"/>
         <includeConstraint refId="spring-injection:ApplicationTypeMustNotImplementSpringInterface"/>
     </group>
@@ -62,10 +62,10 @@
         <description>Injectables types must not be instantiated directly (except test code).</description>
         <cypher><![CDATA[
             MATCH
-              (artifact:Artifact)-[:CONTAINS]->(injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
-              (type:Type)-[:DECLARES]->(method:Method)-[newInstance:INVOKES]->(constructor)            
-            WHERE
-              artifact.type <> "test-jar"
+              (injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
+              (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(method:Method)-[newInstance:INVOKES]->(constructor)
+            WHERE NOT
+              (has(artifact.type) and artifact.type="test-jar")
             RETURN
               type as Type, method as Method, injectable as Injectable,
               newInstance.lineNumber as LineNumber
