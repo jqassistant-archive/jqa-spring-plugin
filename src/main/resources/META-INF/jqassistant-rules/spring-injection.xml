@@ -74,7 +74,7 @@
 
     <constraint id="spring-injection:FieldInjectionIsNotAllowed">
         <requiresConcept refId="spring-injection:InjectionPoint"/>
-        <description>Field injection is not allowed, use Constructor injection instead.</description>
+        <description>Field injection is not allowed, use constructor injection instead.</description>
         <cypher><![CDATA[
             MATCH
               (type:Type)-[:DECLARES]->(field:Field:InjectionPoint)
