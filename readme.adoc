@@ -1,8 +1,73 @@
 = jQAssistant Spring Framework Plugin
 
-This is the Spring Framework Plugin of https://www.jqassistant.org[jQAssistant^].
-It enables jQAssistant to scan and to analyze projects using
-http://www.spring.org/[Spring^].
+This is the Spring Framework Plugin of https://www.jqassistant.org[jQAssistant].
+It provides pre-defined rules for projects using the http://www.spring.org/[Spring Framework], e.g.:
 
+* Spring Boot
+** Package layout, i.e. all classes of a Spring Boot application must be located in the package of the application
+   class or a child package of it.
+* Spring Components
+** Verification of dependencies between Spring components, i.e. controllers, services and repositories
+* Dependency Injection
+** Prevent field injection and direct instantiation of injectable types
+** Ensure that fields of injectable stype which have been initialized by a constructur are not manipulated
+* Transactions
+** Disallow direct invocation of transactional methods from within the same class
 
 For more information on jQAssistant see https://www.jqassistant.org[^].
+
+== Usage
+
+1. Add jQAssistant to the build section of your Spring Boot project.
+2. Include the Spring plugin as a dependency
+3. Activate the desired group of rules, either "spring-boot:Default" or "spring-boot:Strict"
+
+[source,xml]
+----
+<project>
+
+  <properties>
+    <jqassistant.version>1.1.3
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!-- <1> -->
+        <groupId>com.buschmais.jqassistant.scm</groupId>
+        <artifactId>jqassistant-maven-plugin</artifactId>
+        <version>${jqassistant.version}</version>
+
+        <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>scan</goal>
+              <goal>analyze</goal>
+            </goals>
+            <configuration>
+              <groups>
+                <!-- <2> -->
+                <group>spring-boot:Strict</group>
+              </groups>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <!-- <3> -->
+          <dependency>
+            <groupId>com.buschmais.jqassistant.plugin</groupId>
+            <artifactId>jqassistant.plugin.spring</artifactId>
+            <version>${jqassistant.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+----
+
+<1> Adds jQAssistant as a Maven plugin
+<2> Activates the group "spring-boot:Strict".
+<3> Declares the Spring Boot plugin of jQAssistant as dependency
+
