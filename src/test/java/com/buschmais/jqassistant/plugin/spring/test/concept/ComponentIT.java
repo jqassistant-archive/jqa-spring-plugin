@@ -9,53 +9,65 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import com.buschmais.jqassistant.plugin.spring.test.set.components.Controller;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.Service;
 import org.junit.Test;
 
-import com.buschmais.jqassistant.plugin.spring.test.set.components.TestAnnotatedRepository;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.TestImplementedRepository;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestController1;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepository1;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestService1;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.virtual.*;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
 
 public class ComponentIT extends AbstractSpringIT {
 
     @Test
+    public void configuration() throws Exception {
+        scanClasses(ConfigurationWithBeanProducer.class);
+        assertThat(applyConcept("spring-component:Configuration").getStatus(), equalTo(SUCCESS));
+        store.beginTransaction();
+        List<Object> configurations = query("MATCH (c:Spring:Configuration:Component) RETURN c").getColumn("c");
+        assertThat(configurations, hasItem(typeDescriptor(ConfigurationWithBeanProducer.class)));
+        store.commitTransaction();
+    }
+
+    @Test
     public void controller() throws Exception {
-        scanClasses(com.buschmais.jqassistant.plugin.spring.test.set.components.TestService.class);
+        scanClasses(Service.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(FAILURE));
         clearConcepts();
-        scanClasses(com.buschmais.jqassistant.plugin.spring.test.set.components.TestController.class);
+        scanClasses(Controller.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
-
         store.beginTransaction();
         assertThat(query("MATCH (c:Spring:Controller:Component) RETURN c").getColumn("c"),
-                hasItem(typeDescriptor(com.buschmais.jqassistant.plugin.spring.test.set.components.TestController.class)));
+                hasItem(typeDescriptor(Controller.class)));
         store.commitTransaction();
     }
 
     @Test
     public void service() throws Exception {
-        scanClasses(TestAnnotatedRepository.class);
+        scanClasses(AnnotatedRepository.class);
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(FAILURE));
         clearConcepts();
-        scanClasses(com.buschmais.jqassistant.plugin.spring.test.set.components.TestService.class);
+        scanClasses(Service.class);
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));
 
         store.beginTransaction();
         assertThat(query("MATCH (s:Spring:Service:Component) RETURN s").getColumn("s"),
-                hasItem(typeDescriptor(com.buschmais.jqassistant.plugin.spring.test.set.components.TestService.class)));
+                hasItem(typeDescriptor(Service.class)));
         store.commitTransaction();
     }
 
     @Test
     public void repository() throws Exception {
-        scanClasses(TestAnnotatedRepository.class, TestImplementedRepository.class);
+        scanClasses(AnnotatedRepository.class, ImplementedRepository.class);
         assertThat(applyConcept("spring-component:Repository").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
         List<Object> repositories = query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r");
-        assertThat(repositories, hasItem(typeDescriptor(TestAnnotatedRepository.class)));
-        assertThat(repositories, hasItem(typeDescriptor(TestImplementedRepository.class)));
+        assertThat(repositories, hasItem(typeDescriptor(AnnotatedRepository.class)));
+        assertThat(repositories, hasItem(typeDescriptor(ImplementedRepository.class)));
         store.commitTransaction();
     }
 

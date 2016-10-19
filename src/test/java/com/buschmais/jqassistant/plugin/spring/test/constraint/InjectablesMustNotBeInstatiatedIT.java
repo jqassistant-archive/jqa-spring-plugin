@@ -9,10 +9,10 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorM
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationBean;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
@@ -21,14 +21,15 @@ import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
 import com.buschmais.jqassistant.plugin.common.api.model.DependsOnDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ControllerInstantiatingService;
-import com.buschmais.jqassistant.plugin.spring.test.set.injectables.TestService;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.Service;
 
 public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
 
     @Test
     public void applicationClasses() throws Exception {
-        scanClasses("a", ControllerInstantiatingService.class, TestService.class);
+        scanClasses("a", ControllerInstantiatingService.class, Service.class, ConfigurationWithBeanProducer.class, ConfigurationBean.class);
         Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeInstantiated");
         assertThat(result.getStatus(), equalTo(FAILURE));
         store.beginTransaction();
@@ -38,7 +39,7 @@ public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
         Map<String, Object> row = rows.get(0);
         assertThat(row.get("Type"), (Matcher<? super Object>) typeDescriptor(ControllerInstantiatingService.class));
         assertThat(row.get("Method"), (Matcher<? super Object>) methodDescriptor(ControllerInstantiatingService.class, "instantiateService"));
-        assertThat(row.get("Injectable"), (Matcher<? super Object>) typeDescriptor(TestService.class));
+        assertThat(row.get("Injectable"), (Matcher<? super Object>) typeDescriptor(Service.class));
         store.commitTransaction();
     }
 
@@ -51,7 +52,7 @@ public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
         testJar.setType("test-jar");
         store.create(testJar, DependsOnDescriptor.class, jar);
         store.commitTransaction();
-        scanClasses("a", TestService.class);
+        scanClasses("a", Service.class);
         scanClasses("b", ControllerInstantiatingService.class);
         assertThat(validateConstraint("spring-injection:InjectablesMustNotBeInstantiated").getStatus(), equalTo(SUCCESS));
     }
