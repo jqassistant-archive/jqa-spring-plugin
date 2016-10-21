@@ -118,6 +118,7 @@
             WHERE NOT (
               other:Service
               or other:Repository
+              or other:Component
             )
             RETURN
               controller as Controller, collect(other) as InvalidDependencies
@@ -135,9 +136,9 @@
             WITH
               controller, collect(other) as others
             WHERE NOT (
-              all (other in others WHERE other:Service)
+              all (other in others WHERE other:Service or other:Component)
               or
-              all (other in others WHERE other:Repository)
+              all (other in others WHERE other:Repository or other:Component)
             )
             RETURN
               controller as Controller, others as InvalidDependencies
@@ -155,6 +156,7 @@
             WHERE NOT (
               other:Service
               or other:Repository
+              or other:Component
             )
             RETURN
               service as Service, collect(other) as InvalidDependencies
@@ -171,6 +173,7 @@
               (repository:Spring:Repository)-[:DEPENDS_ON]->(other:Spring:Component)
             WHERE NOT (
               other:Repository
+              or other:Component
             )
             RETURN
               repository as Repository, collect(other) as InvalidDependencies
