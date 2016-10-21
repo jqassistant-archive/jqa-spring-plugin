@@ -49,7 +49,11 @@
             MATCH
               (injectionPoint:Member)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.beans.factory.annotation.Autowired"
+              annotationType.fqn in [
+                "org.springframework.beans.factory.annotation.Autowired",
+                "javax.inject.Inject",
+                "javax.annotation.Resource"
+              ]
             SET
               injectionPoint:Spring:InjectionPoint
             RETURN
