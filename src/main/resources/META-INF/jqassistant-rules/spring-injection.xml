@@ -3,11 +3,13 @@
     <group id="spring-injection:Default">
         <includeConstraint refId="spring-injection:InjectablesMustNotBeInstantiated"/>
         <includeConstraint refId="spring-injection:FieldsInitializedByConstructorMustNotBeManipulated"/>
+        <includeConstraint refId="spring-injection:AvoidInitializingBean"/>
+        <includeConstraint refId="spring-injection:AvoidDisposableBean"/>
+        <includeConstraint refId="spring-injection:AvoidAwareInterfacesInFavorOfInjection"/>
     </group>
 
     <group id="spring-injection:Strict">
         <includeConstraint refId="spring-injection:FieldInjectionIsNotAllowed"/>
-        <includeConstraint refId="spring-injection:ApplicationTypeMustNotImplementSpringInterface"/>
     </group>
 
     <concept id="spring-injection:Injectable">
@@ -100,16 +102,46 @@
         ]]></cypher>
     </constraint>
 
-    <constraint id="spring-injection:ApplicationTypeMustNotImplementSpringInterface">
-        <description>Types declared by the application must not implement interfaces defined by the Spring framework.
+    <constraint id="spring-injection:AvoidInitializingBean">
+        <description>Prefer to use @PostConstruct over implementing InitializingBean.
         </description>
         <cypher><![CDATA[
             MATCH
               (type:Type)-[:IMPLEMENTS]->(otherType:Type)
             WHERE
-              otherType.fqn starts with "org.springframework"
+              otherType.fqn = "org.springframework.beans.factory.InitializingBean"
             RETURN
-              type as Component, otherType as Interface
+              type as Component
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:AvoidDisposableBean">
+        <description>Prefer to use @PreDestroy over implementing DisposableBean.
+        </description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:IMPLEMENTS]->(otherType:Type)
+            WHERE
+              otherType.fqn = "org.springframework.beans.factory.DisposableBean"
+            RETURN
+              type as Component
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:AvoidAwareInterfacesInFavorOfInjection">
+        <description>Prefer to inject framework components over implementing …Aware interfaces.
+        </description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:IMPLEMENTS]->(otherType:Type)
+            WHERE
+              otherType.fqn in [
+                "org.springframework.beans.factory.BeanFactoryAware",
+                "org.springframework.context.ApplicationContextAware",
+                "org.springframework.context.ApplicationEventPublisherAware"
+              ]
+            RETURN
+              type as Component, otherType as ImplementedInterface
         ]]></cypher>
     </constraint>
 
