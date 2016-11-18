@@ -77,7 +77,10 @@
         <description>Field injection is not allowed, use constructor injection instead.</description>
         <cypher><![CDATA[
             MATCH
-              (type:Type)-[:DECLARES]->(field:Field:InjectionPoint)
+              (type:Type)-[:DECLARES]->(field:Field:InjectionPoint),
+              (artifact:Artifact)-[:CONTAINS]->(type:Type)
+            WHERE NOT
+              (has(artifact.type) and artifact.type="test-jar")
             RETURN
               type as Type, field as Field
         ]]></cypher>
