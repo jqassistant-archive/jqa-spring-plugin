@@ -9,11 +9,13 @@
         <description>Transactional methods must not be invoked from the same class.</description>
         <cypher><![CDATA[
             MATCH
-              (type:Type)-[:DECLARES]->(method:Method:Spring:Transactional),
+              (type:Type)-[:DECLARES]->(calledMethod:Method:Spring:Transactional),
               (type:Type)-[:DECLARES]->(callingMethod:Method),
-              (callingMethod:Method)-[invokes:INVOKES]->(method)
+              (callingMethod:Method)-[invokes:INVOKES]->(calledMethod)
+            WHERE NOT
+              (callingMethod:Method:Spring:Transactional or type:Spring:Transactional)
             RETURN
-              type as Type, method as TransactionalMethod, invokes.lineNumber as LineNumber
+              type as Type, callingMethod as Method, calledMethod as TransactionalMethod, invokes.lineNumber as LineNumber
         ]]></cypher>
     </constraint>
 
@@ -24,9 +26,11 @@
         </description>
         <cypher><![CDATA[
            MATCH
+             (type:Type)-[:DECLARES]->(transactionalMethod:Method),
              (transactionalMethod:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
            WHERE
              annotationType.fqn = "org.springframework.transaction.annotation.Transactional"
+             or type:Spring:Transactional
            SET
              transactionalMethod:Spring:Transactional
            RETURN
