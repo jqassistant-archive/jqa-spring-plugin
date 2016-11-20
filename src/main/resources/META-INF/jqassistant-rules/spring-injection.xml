@@ -2,17 +2,20 @@
 
     <group id="spring-injection:Default">
         <includeConstraint refId="spring-injection:InjectablesMustNotBeInstantiated"/>
+        <includeConstraint refId="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent" />
         <includeConstraint refId="spring-injection:FieldsInitializedByConstructorMustNotBeManipulated"/>
+        <includeConstraint refId="spring-injection:AvoidInitializingBean"/>
+        <includeConstraint refId="spring-injection:AvoidDisposableBean"/>
+        <includeConstraint refId="spring-injection:AvoidAwareInterfacesInFavorOfInjection"/>
     </group>
 
     <group id="spring-injection:Strict">
         <includeConstraint refId="spring-injection:FieldInjectionIsNotAllowed"/>
-        <includeConstraint refId="spring-injection:ApplicationTypeMustNotImplementSpringInterface"/>
     </group>
 
     <concept id="spring-injection:Injectable">
         <requiresConcept refId="spring-component:Component"/>
-        <requiresConcept refId="spring-injection:BeanMethod"/>
+        <requiresConcept refId="spring-injection:BeanProducer"/>
         <description>Returns all injectables.</description>
         <cypher><![CDATA[
             MATCH
@@ -22,34 +25,69 @@
         ]]></cypher>
     </concept>
 
-    <concept id="spring-injection:BeanMethod">
-        <requiresConcept refId="spring-component:Configuration"/>
-        <description>Labels all return types of configuration methods which are annotated with
-            "@org.springframework.context.annotation.Bean" with "Spring" and "Injectable".
+    <concept id="spring-injection:BeanProducer">
+        <description>Labels methods which are annotated with "@org.springframework.context.annotation.Bean" with
+            "BeanProducer" and their return types with "Spring" and "Injectable".
         </description>
         <cypher><![CDATA[
            MATCH
-              (configuration:Configuration)-[:DECLARES]->(method:Java:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type),
-              (method)-[:RETURNS]->(injectable:Type)
+              (:Type)-[:DECLARES]->(beanProducer:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type),
+              (beanProducer)-[:RETURNS]->(injectable:Type)
             WHERE
               annotationType.fqn = "org.springframework.context.annotation.Bean"
             SET
-              injectable:Spring:Injectable
+              injectable:Spring:Injectable,
+              beanProducer:Spring:BeanProducer
             RETURN
-              injectable as Injectable
+              injectable as Injectable, beanProducer as BeanProducer
         ]]></cypher>
     </concept>
 
+    <constraint id="spring-injection:InjectablesMustNotBeInstantiated">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Injectables types must not be instantiated directly except by @Bean methods or test code.
+        </description>
+        <cypher><![CDATA[
+            MATCH
+              (injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
+              (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(method:Method)-[newInstance:INVOKES]->(constructor)
+            WHERE NOT (
+              (has(artifact.type) and artifact.type="test-jar")
+              OR method:Spring:BeanProducer
+            )
+            RETURN
+              type as Type, method as Method, injectable as Injectable,
+              newInstance.lineNumber as LineNumber
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent">
+        <requiresConcept refId="spring-injection:BeanProducer"/>
+        <requiresConcept refId="spring-component:Configuration"/>
+        <description>Bean producer methods must be declared in configuration components.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:DECLARES]->(beanProducer:Method:BeanProducer)-[:RETURNS]->(injectable:Injectable)
+            WHERE NOT
+              type:Spring:Component:Configuration
+            RETURN
+              beanProducer as BeanProducer, injectable as Injectable
+        ]]></cypher>
+    </constraint>
+
     <concept id="spring-injection:InjectionPoint">
         <description>Labels all type members annotated with "@org.springframework.beans.factory.annotation.Autowired"
-            with
-            "Spring" and "InjectionPoint".
+            with "Spring" and "InjectionPoint".
         </description>
         <cypher><![CDATA[
             MATCH
               (injectionPoint:Member)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.beans.factory.annotation.Autowired"
+              annotationType.fqn in [
+                "org.springframework.beans.factory.annotation.Autowired",
+                "javax.inject.Inject",
+                "javax.annotation.Resource"
+              ]
             SET
               injectionPoint:Spring:InjectionPoint
             RETURN
@@ -57,27 +95,15 @@
         ]]></cypher>
     </concept>
 
-    <constraint id="spring-injection:InjectablesMustNotBeInstantiated">
-        <requiresConcept refId="spring-injection:Injectable"/>
-        <description>Injectables types must not be instantiated directly (except test code).</description>
-        <cypher><![CDATA[
-            MATCH
-              (injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
-              (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(method:Method)-[newInstance:INVOKES]->(constructor)
-            WHERE NOT
-              (has(artifact.type) and artifact.type="test-jar")
-            RETURN
-              type as Type, method as Method, injectable as Injectable,
-              newInstance.lineNumber as LineNumber
-        ]]></cypher>
-    </constraint>
-
     <constraint id="spring-injection:FieldInjectionIsNotAllowed">
         <requiresConcept refId="spring-injection:InjectionPoint"/>
-        <description>Field injection is not allowed, use Constructor injection instead.</description>
+        <description>Field injection is not allowed, use constructor injection instead.</description>
         <cypher><![CDATA[
             MATCH
-              (type:Type)-[:DECLARES]->(field:Field:InjectionPoint)
+              (type:Type)-[:DECLARES]->(field:Field:InjectionPoint),
+              (artifact:Artifact)-[:CONTAINS]->(type:Type)
+            WHERE NOT
+              (has(artifact.type) and artifact.type="test-jar")
             RETURN
               type as Type, field as Field
         ]]></cypher>
@@ -100,16 +126,44 @@
         ]]></cypher>
     </constraint>
 
-    <constraint id="spring-injection:ApplicationTypeMustNotImplementSpringInterface">
-        <description>Types declared by the application must not implement interfaces defined by the Spring framework.
+    <constraint id="spring-injection:AvoidInitializingBean">
+        <description>Prefer to use @PostConstruct over implementing InitializingBean.
         </description>
         <cypher><![CDATA[
             MATCH
               (type:Type)-[:IMPLEMENTS]->(otherType:Type)
             WHERE
-              otherType.fqn starts with "org.springframework"
+              otherType.fqn = "org.springframework.beans.factory.InitializingBean"
             RETURN
-              type as Component, otherType as Interface
+              type as Type
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:AvoidDisposableBean">
+        <description>Prefer to use @PreDestroy over implementing DisposableBean.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:IMPLEMENTS]->(otherType:Type)
+            WHERE
+              otherType.fqn = "org.springframework.beans.factory.DisposableBean"
+            RETURN
+              type as Type
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:AvoidAwareInterfacesInFavorOfInjection">
+        <description>Prefer to inject framework components over implementing …Aware interfaces.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:IMPLEMENTS]->(otherType:Type)
+            WHERE
+              otherType.fqn in [
+                "org.springframework.beans.factory.BeanFactoryAware",
+                "org.springframework.context.ApplicationContextAware",
+                "org.springframework.context.ApplicationEventPublisherAware"
+              ]
+            RETURN
+              type as Type, otherType as ImplementedInterface
         ]]></cypher>
     </constraint>
 

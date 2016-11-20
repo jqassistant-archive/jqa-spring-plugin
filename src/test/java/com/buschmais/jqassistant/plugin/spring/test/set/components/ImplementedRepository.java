@@ -2,6 +2,6 @@ package com.buschmais.jqassistant.plugin.spring.test.set.components;
 
 import org.springframework.data.repository.Repository;
 
-public interface TestImplementedRepository extends Repository<Object, Integer>  {
+public interface ImplementedRepository extends Repository<Object, Integer>  {
 
 }

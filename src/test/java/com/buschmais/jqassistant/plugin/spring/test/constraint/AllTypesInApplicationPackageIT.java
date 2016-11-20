@@ -18,7 +18,7 @@ import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
 import com.buschmais.jqassistant.plugin.common.test.scanner.MapBuilder;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.application.invalid.TestController;
+import com.buschmais.jqassistant.plugin.spring.test.set.application.invalid.Controller;
 import com.buschmais.jqassistant.plugin.spring.test.set.application.invalid.app.Application;
 
 public class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
@@ -36,7 +36,7 @@ public class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
     public void typeOutsideApplicationPackage() throws Exception {
         scanClassPathDirectory(getClassesDirectory(AllTypesInApplicationPackageIT.class));
         store.beginTransaction();
-        deletePackages(TestController.class);
+        deletePackages(Controller.class);
         store.commitTransaction();
         Result<Constraint> result = validateConstraint("spring-boot:AllTypesInApplicationPackage");
         assertThat(result.getStatus(), equalTo(FAILURE));
@@ -48,7 +48,7 @@ public class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
         assertThat(row.get("ApplicationPackage"), (Matcher<? super Object>) packageDescriptor(Application.class.getPackage()));
         List<TypeDescriptor> typesOutsideApplicationPackage = (List<TypeDescriptor>) row.get("TypesOutsideApplicationPackage");
         assertThat(typesOutsideApplicationPackage.size(), equalTo(1));
-        assertThat(typesOutsideApplicationPackage.get(0), typeDescriptor(TestController.class));
+        assertThat(typesOutsideApplicationPackage.get(0), typeDescriptor(Controller.class));
         store.commitTransaction();
     }
 
