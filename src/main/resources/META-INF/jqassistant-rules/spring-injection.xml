@@ -135,26 +135,24 @@
             WHERE
               otherType.fqn = "org.springframework.beans.factory.InitializingBean"
             RETURN
-              type as Component
+              type as Type
         ]]></cypher>
     </constraint>
 
     <constraint id="spring-injection:AvoidDisposableBean">
-        <description>Prefer to use @PreDestroy over implementing DisposableBean.
-        </description>
+        <description>Prefer to use @PreDestroy over implementing DisposableBean.</description>
         <cypher><![CDATA[
             MATCH
               (type:Type)-[:IMPLEMENTS]->(otherType:Type)
             WHERE
               otherType.fqn = "org.springframework.beans.factory.DisposableBean"
             RETURN
-              type as Component
+              type as Type
         ]]></cypher>
     </constraint>
 
     <constraint id="spring-injection:AvoidAwareInterfacesInFavorOfInjection">
-        <description>Prefer to inject framework components over implementing …Aware interfaces.
-        </description>
+        <description>Prefer to inject framework components over implementing …Aware interfaces.</description>
         <cypher><![CDATA[
             MATCH
               (type:Type)-[:IMPLEMENTS]->(otherType:Type)
@@ -165,7 +163,7 @@
                 "org.springframework.context.ApplicationEventPublisherAware"
               ]
             RETURN
-              type as Component, otherType as ImplementedInterface
+              type as Type, otherType as ImplementedInterface
         ]]></cypher>
     </constraint>
 

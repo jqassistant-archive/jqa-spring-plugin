@@ -1,15 +1,13 @@
 package com.buschmais.jqassistant.plugin.spring.test.set.interfaces;
 
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClassImplementingSpringInterface implements InitializingBean {
+public class TestDisposableBean implements DisposableBean {
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        // TODO Auto-generated method stub
-        
+    public void destroy() throws Exception {
     }
-
 }
