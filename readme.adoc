@@ -10,7 +10,7 @@ It provides pre-defined rules for projects using the http://www.spring.org/[Spri
 ** Verification of dependencies between Spring components, i.e. controllers, services and repositories
 * Dependency Injection
 ** Prevent field injection and direct instantiation of injectable types
-** Ensure that fields of injectable stype which have been initialized by a constructur are not manipulated
+** Ensure that fields of injectable stype which have been initialized by a constructor are not manipulated
 * Transactions
 ** Disallow direct invocation of transactional methods from within the same class
 
@@ -18,8 +18,8 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
 
 == Usage
 
-1. Add jQAssistant to the build section of your Spring Boot project.
-2. Include the Spring plugin as a dependency
+0. As there's no official release yet clone this https://github.com/buschmais/jqa-spring-plugin.git[repository], switch to branch "1.1" and build it using "mvn install"
+1. Add jQAssistant to the build section of your Spring Boot project and include the Spring plugin as a dependency
 3. Activate the desired group of rules, either "spring-boot:Default" or "spring-boot:Strict"
 
 [source,xml]
@@ -28,6 +28,7 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
 
   <properties>
     <jqassistant.version>1.1.4</jqassistant.version>
+    <jqassistant.spring.plugin.version>1.1.4-SNAPSHOT</jqassistant.spring.plugin.version>
   </properties>
 
   <build>
@@ -58,7 +59,7 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
           <dependency>
             <groupId>com.buschmais.jqassistant.plugin</groupId>
             <artifactId>jqassistant.plugin.spring</artifactId>
-            <version>${jqassistant.version}</version>
+            <version>${jqassistant.spring.plugin.version}</version>
           </dependency>
         </dependencies>
       </plugin>
