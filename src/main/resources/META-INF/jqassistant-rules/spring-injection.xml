@@ -52,7 +52,7 @@
               (injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
               (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(method:Method)-[newInstance:INVOKES]->(constructor)
             WHERE NOT (
-              (has(artifact.type) and artifact.type="test-jar")
+              (exists(artifact.type) and artifact.type="test-jar")
               OR method:Spring:BeanProducer
             )
             RETURN
@@ -103,7 +103,7 @@
               (type:Type)-[:DECLARES]->(field:Field:InjectionPoint),
               (artifact:Artifact)-[:CONTAINS]->(type:Type)
             WHERE NOT
-              (has(artifact.type) and artifact.type="test-jar")
+              (exists(artifact.type) and artifact.type="test-jar")
             RETURN
               type as Type, field as Field
         ]]></cypher>
@@ -152,7 +152,7 @@
     </constraint>
 
     <constraint id="spring-injection:AvoidAwareInterfacesInFavorOfInjection">
-        <description>Prefer to inject framework components over implementing …Aware interfaces.</description>
+        <description>Prefer to inject framework components over implementing '…Aware' interfaces.</description>
         <cypher><![CDATA[
             MATCH
               (type:Type)-[:IMPLEMENTS]->(otherType:Type)

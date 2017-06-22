@@ -56,7 +56,7 @@
              (transactionalClass)-[:DECLARES]->(transactionalMethod:Method)
            WHERE NOT (
              transactionalMethod:Constructor
-             or (has(transactionalMethod.static) and transactionalMethod.static)
+             or (exists(transactionalMethod.static) and transactionalMethod.static)
            )
            SET
              transactionalMethod:Spring:Transactional
