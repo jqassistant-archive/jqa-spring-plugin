@@ -94,10 +94,10 @@
         </description>
         <cypher><![CDATA[
           MATCH
-             (artifact:Artifact)-[:CONTAINS]->(abstractType:Type),
-             (component:Spring:Component)-[:DEPENDS_ON]->(abstractType)<-[:IMPLEMENTS|EXTENDS*]-(otherComponent:Spring:Component)
+             (component:Spring:Component)-[:DEPENDS_ON]->(superType)<-[:IMPLEMENTS|EXTENDS*]-(otherComponent:Spring:Component)
           WHERE
             component <> otherComponent
+            and not (component)-[:EXTENDS|IMPLEMENTS*]->(superType) // exclude components sharing the same super classes/interfaces
           MERGE
             (component)-[d:DEPENDS_ON]->(otherComponent)
           SET

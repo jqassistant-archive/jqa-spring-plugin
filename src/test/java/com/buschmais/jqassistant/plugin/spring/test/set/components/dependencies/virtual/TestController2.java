@@ -4,15 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class TestControllerWithMixedDependencies {
+public class TestController2 extends AbstractTestController implements TestController {
 
     private TestService testService;
 
-    private TestRepository testRepository;
-
     @Autowired
-    public TestControllerWithMixedDependencies(TestService testService, TestRepository testRepository) {
+    public TestController2(TestService testService) {
         this.testService = testService;
-        this.testRepository = testRepository;
     }
 }

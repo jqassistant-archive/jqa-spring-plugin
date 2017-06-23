@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestController1;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepository1;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestService1;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.virtual.*;
@@ -41,8 +40,7 @@ public class ComponentIT extends AbstractSpringIT {
         scanClasses(Controller.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
-        assertThat(query("MATCH (c:Spring:Controller:Component) RETURN c").getColumn("c"),
-                hasItem(typeDescriptor(Controller.class)));
+        assertThat(query("MATCH (c:Spring:Controller:Component) RETURN c").getColumn("c"), hasItem(typeDescriptor(Controller.class)));
         store.commitTransaction();
     }
 
@@ -55,8 +53,7 @@ public class ComponentIT extends AbstractSpringIT {
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));
 
         store.beginTransaction();
-        assertThat(query("MATCH (s:Spring:Service:Component) RETURN s").getColumn("s"),
-                hasItem(typeDescriptor(Service.class)));
+        assertThat(query("MATCH (s:Spring:Service:Component) RETURN s").getColumn("s"), hasItem(typeDescriptor(Service.class)));
         store.commitTransaction();
     }
 
@@ -73,7 +70,8 @@ public class ComponentIT extends AbstractSpringIT {
 
     @Test
     public void directComponentDependencies() throws Exception {
-        scanClasses(TestController1.class, TestService1.class, TestRepository1.class);
+        scanClasses(com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestController1.class, TestService1.class,
+                TestRepository1.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));
         assertThat(applyConcept("spring-component:Repository").getStatus(), equalTo(SUCCESS));
@@ -83,9 +81,13 @@ public class ComponentIT extends AbstractSpringIT {
 
     @Test
     public void virtualComponentDependencies() throws Exception {
-        scanClasses(TestController.class, TestService.class, TestServiceImpl.class, TestRepository.class, TestRepositoryImpl.class);
+        scanClasses(TestController.class, AbstractTestController.class, TestController1.class, TestController2.class, TestService.class, TestServiceImpl.class,
+                TestRepository.class, TestRepositoryImpl.class);
         assertThat(applyConcept("spring-component:VirtualDependency").getStatus(), equalTo(SUCCESS));
-        verifyComponentDependencies("MATCH (:Spring:Controller)-[:DEPENDS_ON{virtual:true}]->(c:Spring:Component) RETURN c", TestServiceImpl.class);
+        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController1'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Component) RETURN c",
+                TestServiceImpl.class);
+        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController2'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Component) RETURN c",
+                TestServiceImpl.class);
         verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON{virtual:true}]->(c:Spring:Component) RETURN c", TestRepositoryImpl.class);
     }
 
