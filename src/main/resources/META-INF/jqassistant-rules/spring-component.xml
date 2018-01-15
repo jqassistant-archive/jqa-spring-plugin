@@ -7,7 +7,6 @@
     </group>
 
     <group id="spring-component:Strict">
-        <includeConstraint refId="spring-component:ControllerMustDependEitherOnServicesOrRepositories"/>
         <includeGroup refId="spring-component:Default"/>
     </group>
 
@@ -121,26 +120,6 @@
             )
             RETURN
               controller as Controller, collect(other) as InvalidDependencies
-        ]]></cypher>
-    </constraint>
-
-    <constraint id="spring-component:ControllerMustDependEitherOnServicesOrRepositories">
-        <requiresConcept refId="spring-component:VirtualDependency"/>
-        <description>A Spring service can only have dependencies to other Spring components that are either services or
-            repositories.
-        </description>
-        <cypher><![CDATA[
-            MATCH
-              (controller:Spring:Controller)-[:DEPENDS_ON]->(other:Spring:Component)
-            WITH
-              controller, collect(other) as others
-            WHERE NOT (
-              all (other in others WHERE other:Service)
-              or
-              all (other in others WHERE other:Repository)
-            )
-            RETURN
-              controller as Controller, others as InvalidDependencies
         ]]></cypher>
     </constraint>
 
