@@ -14,7 +14,7 @@
     </group>
 
     <concept id="spring-injection:Injectable">
-        <requiresConcept refId="spring-component:Component"/>
+        <requiresConcept refId="spring-component:AnnotatedInjectables"/>
         <requiresConcept refId="spring-injection:BeanProducer"/>
         <description>Returns all injectables.</description>
         <cypher><![CDATA[
@@ -69,7 +69,7 @@
             MATCH
               (type:Type)-[:DECLARES]->(beanProducer:Method:BeanProducer)-[:RETURNS]->(injectable:Injectable)
             WHERE NOT
-              type:Spring:Component:Configuration
+              type:Spring:Configuration
             RETURN
               beanProducer as BeanProducer, injectable as Injectable
         ]]></cypher>

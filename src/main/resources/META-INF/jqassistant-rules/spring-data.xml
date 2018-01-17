@@ -10,7 +10,7 @@
             WHERE
               annotationType.fqn = "org.springframework.stereotype.Repository"
             SET
-              repository:Spring:Repository:Component
+              repository:Spring:Repository:Injectable
             RETURN
               repository as Repository
         ]]></cypher>
@@ -33,7 +33,7 @@
                 "org.springframework.data.jpa.repository.support.QueryDslJpaRepository"
               ]
             SET
-              repository:Spring:Repository:Component
+              repository:Spring:Repository:Injectable
             RETURN
               repository as Repository
         ]]></cypher>

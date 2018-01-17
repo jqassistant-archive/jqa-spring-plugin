@@ -27,7 +27,7 @@ public class ComponentIT extends AbstractSpringIT {
         scanClasses(ConfigurationWithBeanProducer.class);
         assertThat(applyConcept("spring-component:Configuration").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
-        List<Object> configurations = query("MATCH (c:Spring:Configuration:Component) RETURN c").getColumn("c");
+        List<Object> configurations = query("MATCH (c:Spring:Configuration) RETURN c").getColumn("c");
         assertThat(configurations, hasItem(typeDescriptor(ConfigurationWithBeanProducer.class)));
         store.commitTransaction();
     }
@@ -40,7 +40,7 @@ public class ComponentIT extends AbstractSpringIT {
         scanClasses(Controller.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
-        assertThat(query("MATCH (c:Spring:Controller:Component) RETURN c").getColumn("c"), hasItem(typeDescriptor(Controller.class)));
+        assertThat(query("MATCH (c:Spring:Controller) RETURN c").getColumn("c"), hasItem(typeDescriptor(Controller.class)));
         store.commitTransaction();
     }
 
@@ -53,7 +53,7 @@ public class ComponentIT extends AbstractSpringIT {
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));
 
         store.beginTransaction();
-        assertThat(query("MATCH (s:Spring:Service:Component) RETURN s").getColumn("s"), hasItem(typeDescriptor(Service.class)));
+        assertThat(query("MATCH (s:Spring:Service) RETURN s").getColumn("s"), hasItem(typeDescriptor(Service.class)));
         store.commitTransaction();
     }
 
@@ -62,7 +62,7 @@ public class ComponentIT extends AbstractSpringIT {
         scanClasses(AnnotatedRepository.class, ImplementedRepository.class);
         assertThat(applyConcept("spring-component:Repository").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
-        List<Object> repositories = query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r");
+        List<Object> repositories = query("MATCH (r:Spring:Repository) RETURN r").getColumn("r");
         assertThat(repositories, hasItem(typeDescriptor(AnnotatedRepository.class)));
         assertThat(repositories, hasItem(typeDescriptor(ImplementedRepository.class)));
         store.commitTransaction();
@@ -75,8 +75,8 @@ public class ComponentIT extends AbstractSpringIT {
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));
         assertThat(applyConcept("spring-component:Repository").getStatus(), equalTo(SUCCESS));
-        verifyComponentDependencies("MATCH (:Spring:Controller)-[:DEPENDS_ON]->(c:Spring:Component) RETURN c", TestService1.class);
-        verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON]->(c:Spring:Component) RETURN c", TestRepository1.class);
+        verifyComponentDependencies("MATCH (:Spring:Controller)-[:DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestService1.class);
+        verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestRepository1.class);
     }
 
     @Test
@@ -84,11 +84,11 @@ public class ComponentIT extends AbstractSpringIT {
         scanClasses(TestController.class, AbstractTestController.class, TestController1.class, TestController2.class, TestService.class, TestServiceImpl.class,
                 TestRepository.class, TestRepositoryImpl.class);
         assertThat(applyConcept("spring-component:VirtualDependency").getStatus(), equalTo(SUCCESS));
-        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController1'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Component) RETURN c",
+        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController1'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Injectable) RETURN c",
                 TestServiceImpl.class);
-        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController2'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Component) RETURN c",
+        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController2'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Injectable) RETURN c",
                 TestServiceImpl.class);
-        verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON{virtual:true}]->(c:Spring:Component) RETURN c", TestRepositoryImpl.class);
+        verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON{virtual:true}]->(c:Spring:Injectable) RETURN c", TestRepositoryImpl.class);
     }
 
     private void verifyComponentDependencies(String query, Class<?>... dependencies) {

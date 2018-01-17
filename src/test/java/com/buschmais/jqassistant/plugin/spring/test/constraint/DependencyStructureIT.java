@@ -23,61 +23,59 @@ import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.
 
 public class DependencyStructureIT extends AbstractJavaPluginIT {
 
-    @Test
+    private static final String CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES = "spring-component:ControllerMustOnlyDependOnServicesRepositoriesOrComponents";
+    	private static final String CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES = "spring-component:ServiceMustOnlyDependOnServicesRepositoriesOrComponents";
+    	private static final String CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES = "spring-component:RepositoryMustOnlyDependOnRepositoriesOrComponents";
+   
+
+		@Test
     public void controllerDependsOnService() throws Exception {
         scanClasses(TestController1.class, TestService1.class);
-        assertThat(validateConstraint("spring-component:ControllerMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
+        assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
     public void controllerDependsRepository() throws Exception {
         scanClasses(TestControllerWithRepositoryDependency.class, TestRepository1.class);
-        assertThat(validateConstraint("spring-component:ControllerMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
+        assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
     public void controllerDependsOnController() throws Exception {
         scanClasses(TestControllerWithControllerDependency.class, TestController1.class);
-        verifyConstraintViolation("spring-component:ControllerMustOnlyDependOnServicesOrRepositories", "Controller", TestControllerWithControllerDependency.class,
+        verifyConstraintViolation(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES, "Controller", TestControllerWithControllerDependency.class,
                 TestController1.class);
     }
 
     @Test
     public void controllerDependsOnServiceAndRepository() throws Exception {
         scanClasses(TestControllerWithServiceAndRepositoryDependency.class, TestService1.class, TestRepository1.class);
-        assertThat(validateConstraint("spring-component:ControllerMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
-    }
-
-    @Test
-    public void controllerDependsEitherOnServiceOrRepository() throws Exception {
-        scanClasses(TestControllerWithServiceAndRepositoryDependency.class, TestService1.class, TestRepository1.class);
-        verifyConstraintViolation("spring-component:ControllerMustDependEitherOnServicesOrRepositories", "Controller",
-                TestControllerWithServiceAndRepositoryDependency.class, TestService1.class, TestRepository1.class);
+        assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
     public void serviceDependsOnServiceAndRepository() throws Exception {
         scanClasses(TestController1.class, TestService1.class, TestService2.class, TestRepository1.class);
-        assertThat(validateConstraint("spring-component:ServiceMustOnlyDependOnServicesOrRepositories").getStatus(), equalTo(SUCCESS));
+        assertThat(validateConstraint(CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
     public void repositoryDependsOnRepository() throws Exception {
         scanClasses(TestRepository1.class, TestRepository2.class);
-        assertThat(validateConstraint("spring-component:RepositoryMustOnlyDependOnRepositories").getStatus(), equalTo(SUCCESS));
+        assertThat(validateConstraint(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
     public void repositoryDependsOnController() throws Exception {
         scanClasses(TestRepositoryWithControllerDependency.class, TestController1.class);
-        verifyConstraintViolation("spring-component:RepositoryMustOnlyDependOnRepositories", "Repository", TestRepositoryWithControllerDependency.class,
+        verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithControllerDependency.class,
                 TestController1.class);
     }
 
     @Test
     public void repositoryDependsOnService() throws Exception {
         scanClasses(TestRepositoryWithServiceDependency.class, TestService1.class);
-        verifyConstraintViolation("spring-component:RepositoryMustOnlyDependOnRepositories", "Repository", TestRepositoryWithServiceDependency.class,
+        verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithServiceDependency.class,
                 TestService1.class);
     }
 

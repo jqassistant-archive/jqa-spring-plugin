@@ -23,7 +23,7 @@ public class RepositoryIT extends AbstractSpringIT {
         assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(SUCCESS));
        
         store.beginTransaction();
-        assertThat(query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r"), hasItem(typeDescriptor(AnnotatedRepository.class)));
+        assertThat(query("MATCH (r:Spring:Repository) RETURN r").getColumn("r"), hasItem(typeDescriptor(AnnotatedRepository.class)));
         store.commitTransaction();
     }
 
@@ -35,7 +35,7 @@ public class RepositoryIT extends AbstractSpringIT {
         scanClasses(ImplementedRepository.class);
         assertThat(applyConcept("spring-data:ImplementedRepository").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
-        assertThat(query("MATCH (r:Spring:Repository:Component) RETURN r").getColumn("r"), hasItem(typeDescriptor(ImplementedRepository.class)));
+        assertThat(query("MATCH (r:Spring:Repository) RETURN r").getColumn("r"), hasItem(typeDescriptor(ImplementedRepository.class)));
         store.commitTransaction();
     }
 }
