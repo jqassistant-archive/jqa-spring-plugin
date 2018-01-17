@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceWritingConstructorField {
 
+    // Static fields are okay
+    static final String CONSTANT = "CONSTANT";
+
     private String value;
 
     @Autowired

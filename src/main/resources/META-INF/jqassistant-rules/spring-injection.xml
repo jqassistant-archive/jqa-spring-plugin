@@ -3,7 +3,7 @@
     <group id="spring-injection:Default">
         <includeConstraint refId="spring-injection:InjectablesMustNotBeInstantiated"/>
         <includeConstraint refId="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent" />
-        <includeConstraint refId="spring-injection:FieldsInitializedByConstructorMustNotBeManipulated"/>
+        <includeConstraint refId="spring-injection:FieldsOfInjectablesMustNotBeManipulated"/>
         <includeConstraint refId="spring-injection:AvoidInitializingBean"/>
         <includeConstraint refId="spring-injection:AvoidDisposableBean"/>
         <includeConstraint refId="spring-injection:AvoidAwareInterfacesInFavorOfInjection"/>
@@ -111,19 +111,19 @@
         ]]></cypher>
     </constraint>
 
-    <constraint id="spring-injection:FieldsInitializedByConstructorMustNotBeManipulated">
+    <constraint id="spring-injection:FieldsOfInjectablesMustNotBeManipulated">
         <requiresConcept refId="spring-injection:Injectable"/>
-        <description>Fields of injectable types that are written by a constructor must not be manipulated by
-            non-constructor methods.
-        </description>
+        <description>Fields of injectable types must not be manipulated, except from constructors.</description>
         <cypher><![CDATA[
             MATCH
               (injectable:Injectable),
-              (injectable)-[:DECLARES]->(constructor:Constructor)-[:WRITES]->(field:Field),
               (injectable)-[:DECLARES]->(method:Method)-[writes:WRITES]->(field:Field)
-            WHERE NOT
-               method:Constructor
+            WHERE NOT (
+               method:Constructor OR // method is a constructor
+               (exists(field.static) AND field.static) // static fields
+            )
             RETURN
+              injectable.fqn + "." + method.name + "(…) writes field '" + field.name + "' at line " + writes.lineNumber as Message, 
               injectable as Injectable, method as Method, field as Field, writes.lineNumber as LineNumber
         ]]></cypher>
     </constraint>
