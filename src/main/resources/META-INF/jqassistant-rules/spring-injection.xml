@@ -7,6 +7,8 @@
         <includeConstraint refId="spring-injection:AvoidInitializingBean"/>
         <includeConstraint refId="spring-injection:AvoidDisposableBean"/>
         <includeConstraint refId="spring-injection:AvoidAwareInterfacesInFavorOfInjection"/>
+        <includeConstraint refId="spring-injection:InjectablesMustNotBeHeldInStaticVariables"/>
+        <includeConstraint refId="spring-injection:InjectablesMustNotBeAccessedStatically"/>
     </group>
 
     <group id="spring-injection:Strict">
@@ -167,4 +169,29 @@
         ]]></cypher>
     </constraint>
 
+    <constraint id="spring-injection:InjectablesMustNotBeHeldInStaticVariables">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Injectable components must not be held in static variables.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:DECLARES]->(field:Field)-[:OF_TYPE]->(fieldType:Type:Injectable)
+            WHERE
+              field.static
+            RETURN
+              type as Type, field.name as Field
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:InjectablesMustNotBeAccessedStatically">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Injectable components must not be accessed from static variables.</description>
+        <cypher><![CDATA[
+            MATCH
+              (method:Method)-[:READS]->(field:Field)-[:OF_TYPE]->(fieldType:Type:Injectable)
+            WHERE
+              field.static
+            RETURN
+              method as Method, field.name as Field
+        ]]></cypher>
+    </constraint>
 </jqa:jqassistant-rules>
