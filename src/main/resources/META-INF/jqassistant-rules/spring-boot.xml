@@ -12,16 +12,16 @@
         <includeGroup refId="spring-component:Strict" />
         <includeGroup refId="spring-injection:Strict" />
     </group>
-    
+
     <concept id="spring-boot:Application">
-        <description>Labels all Spring Boot Applications with "Spring" and "Application".</description>
+        <description>Labels all Spring Boot Applications with "Spring", "Application", "Configuration" and "Component".</description>
         <cypher><![CDATA[
             MATCH
               (application:Type:Class)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
               annotationType.fqn = "org.springframework.boot.autoconfigure.SpringBootApplication"
             SET
-              application:Spring:Boot:Application
+              application:Spring:Boot:Application:Configuration:Component
             RETURN
               application as Application
         ]]></cypher>

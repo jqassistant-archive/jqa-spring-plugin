@@ -3,18 +3,21 @@
     <group id="spring-injection:Default">
         <includeConstraint refId="spring-injection:InjectablesMustNotBeInstantiated"/>
         <includeConstraint refId="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent" />
-        <includeConstraint refId="spring-injection:FieldsInitializedByConstructorMustNotBeManipulated"/>
+        <includeConstraint refId="spring-injection:FieldsOfInjectablesMustNotBeManipulated"/>
         <includeConstraint refId="spring-injection:AvoidInitializingBean"/>
         <includeConstraint refId="spring-injection:AvoidDisposableBean"/>
         <includeConstraint refId="spring-injection:AvoidAwareInterfacesInFavorOfInjection"/>
+        <includeConstraint refId="spring-injection:InjectablesMustNotBeHeldInStaticVariables"/>
+        <includeConstraint refId="spring-injection:InjectablesMustNotBeAccessedStatically"/>
     </group>
 
     <group id="spring-injection:Strict">
         <includeConstraint refId="spring-injection:FieldInjectionIsNotAllowed"/>
+        <includeConstraint refId="spring-injection:InjectablesShouldBeHeldInFinalFields"/>
     </group>
 
     <concept id="spring-injection:Injectable">
-        <requiresConcept refId="spring-component:Component"/>
+        <requiresConcept refId="spring-component:AnnotatedInjectables"/>
         <requiresConcept refId="spring-injection:BeanProducer"/>
         <description>Returns all injectables.</description>
         <cypher><![CDATA[
@@ -69,7 +72,7 @@
             MATCH
               (type:Type)-[:DECLARES]->(beanProducer:Method:BeanProducer)-[:RETURNS]->(injectable:Injectable)
             WHERE NOT
-              type:Spring:Component:Configuration
+              type:Spring:Configuration
             RETURN
               beanProducer as BeanProducer, injectable as Injectable
         ]]></cypher>
@@ -109,19 +112,33 @@
         ]]></cypher>
     </constraint>
 
-    <constraint id="spring-injection:FieldsInitializedByConstructorMustNotBeManipulated">
+    <constraint id="spring-injection:InjectablesShouldBeHeldInFinalFields">
         <requiresConcept refId="spring-injection:Injectable"/>
-        <description>Fields of injectable types that are written by a constructor must not be manipulated by
-            non-constructor methods.
-        </description>
+        <requiresConcept refId="spring-injection:InjectionPoint"/>
+        <description>Fields holding injectables should be declared final.</description>
+        <cypher><![CDATA[
+            MATCH
+              (source:Type:Injectable)-[declares:DECLARES]->(field:Field)-[:OF_TYPE]->(target:Type)
+            WHERE NOT
+              exists(field.final) AND field.final = false
+            RETURN
+              source.fqn + "." + field.name + " should be declared final! Line: " + declares.lineNumber as Message
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:FieldsOfInjectablesMustNotBeManipulated">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Fields of injectable types must not be manipulated, except from constructors.</description>
         <cypher><![CDATA[
             MATCH
               (injectable:Injectable),
-              (injectable)-[:DECLARES]->(constructor:Constructor)-[:WRITES]->(field:Field),
               (injectable)-[:DECLARES]->(method:Method)-[writes:WRITES]->(field:Field)
-            WHERE NOT
-               method:Constructor
+            WHERE NOT (
+               method:Constructor OR // method is a constructor
+               (exists(field.static) AND field.static) // static fields
+            )
             RETURN
+              injectable.fqn + "." + method.name + "(…) writes field '" + field.name + "' at line " + writes.lineNumber as Message, 
               injectable as Injectable, method as Method, field as Field, writes.lineNumber as LineNumber
         ]]></cypher>
     </constraint>
@@ -167,4 +184,29 @@
         ]]></cypher>
     </constraint>
 
+    <constraint id="spring-injection:InjectablesMustNotBeHeldInStaticVariables">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Injectable components must not be held in static variables.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type)-[:DECLARES]->(field:Field)-[:OF_TYPE]->(fieldType:Type:Injectable)
+            WHERE
+              field.static
+            RETURN
+              type as Type, field.name as Field
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:InjectablesMustNotBeAccessedStatically">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Injectable components must not be accessed from static variables.</description>
+        <cypher><![CDATA[
+            MATCH
+              (method:Method)-[:READS]->(field:Field)-[:OF_TYPE]->(fieldType:Type:Injectable)
+            WHERE
+              field.static
+            RETURN
+              method as Method, field.name as Field
+        ]]></cypher>
+    </constraint>
 </jqa:jqassistant-rules>
