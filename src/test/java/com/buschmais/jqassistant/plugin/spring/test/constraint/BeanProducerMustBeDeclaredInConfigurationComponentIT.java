@@ -1,16 +1,7 @@
 package com.buschmais.jqassistant.plugin.spring.test.constraint;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
-import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescriptorMatcher.methodDescriptor;
-import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
 import java.util.List;
 import java.util.Map;
-
-import org.junit.Test;
 
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
@@ -20,6 +11,15 @@ import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationBean;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ServiceWithBeanProducer;
+
+import org.junit.Test;
+
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescriptorMatcher.methodDescriptor;
+import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class BeanProducerMustBeDeclaredInConfigurationComponentIT extends AbstractJavaPluginIT {
 

@@ -1,5 +1,17 @@
 package com.buschmais.jqassistant.plugin.spring.test.constraint;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.buschmais.jqassistant.core.analysis.api.Result;
+import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
+import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
+import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.*;
+
+import org.junit.Test;
+
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.core.analysis.test.matcher.ConstraintMatcher.constraint;
@@ -9,24 +21,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
-import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
-import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.*;
-
 public class DependencyStructureIT extends AbstractJavaPluginIT {
 
     private static final String CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES = "spring-component:ControllerMustOnlyDependOnServicesRepositoriesOrComponents";
     	private static final String CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES = "spring-component:ServiceMustOnlyDependOnServicesRepositoriesOrComponents";
     	private static final String CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES = "spring-component:RepositoryMustOnlyDependOnRepositoriesOrComponents";
-   
+
 
 		@Test
     public void controllerDependsOnService() throws Exception {

@@ -1,18 +1,19 @@
 package com.buschmais.jqassistant.plugin.spring.test.concept;
 
+import java.util.List;
+
+import com.buschmais.jqassistant.plugin.spring.test.set.transaction.TransactionalClass;
+import com.buschmais.jqassistant.plugin.spring.test.set.transaction.TransactionalMethod;
+import com.buschmais.jqassistant.plugin.spring.test.set.transaction.TransactionalSubClass;
+
+import org.junit.Test;
+
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescriptorMatcher.methodDescriptor;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
-import java.util.List;
-
-import org.junit.Test;
-
-import com.buschmais.jqassistant.plugin.spring.test.set.transaction.TransactionalClass;
-import com.buschmais.jqassistant.plugin.spring.test.set.transaction.TransactionalMethod;
-import com.buschmais.jqassistant.plugin.spring.test.set.transaction.TransactionalSubClass;
 
 public class TransactionalMethodIT extends AbstractSpringIT {
 

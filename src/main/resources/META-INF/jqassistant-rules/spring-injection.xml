@@ -118,11 +118,11 @@
         <description>Fields holding injectables should be declared final.</description>
         <cypher><![CDATA[
             MATCH
-              (source:Type:Injectable)-[declares:DECLARES]->(field:Field)-[:OF_TYPE]->(target:Type)
+              (source:Type:Injectable)-[declares:DECLARES]->(field:Field)-[:OF_TYPE]->(target:Type:Injectable)
             WHERE NOT
-              exists(field.final) AND field.final = false
+              (exists(field.final) AND field.final = true)
             RETURN
-              source.fqn + "." + field.name + " should be declared final! Line: " + declares.lineNumber as Message
+              source as InjectableType, field as InjectableField
         ]]></cypher>
     </constraint>
 
@@ -138,7 +138,7 @@
                (exists(field.static) AND field.static) // static fields
             )
             RETURN
-              injectable.fqn + "." + method.name + "(…) writes field '" + field.name + "' at line " + writes.lineNumber as Message, 
+              injectable.fqn + "." + method.name + "(…) writes field '" + field.name + "' at line " + writes.lineNumber as Message,
               injectable as Injectable, method as Method, field as Field, writes.lineNumber as LineNumber
         ]]></cypher>
     </constraint>

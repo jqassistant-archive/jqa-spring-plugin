@@ -1,19 +1,19 @@
 package com.buschmais.jqassistant.plugin.spring.test.concept;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
+
+import org.junit.Test;
+
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
+import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-
-import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
-
 public class RepositoryIT extends AbstractSpringIT {
-    
+
     @Test
     public void annotatedRepository() throws Exception {
         scanClasses(ImplementedRepository.class);
@@ -21,7 +21,7 @@ public class RepositoryIT extends AbstractSpringIT {
         clearConcepts();
         scanClasses(AnnotatedRepository.class);
         assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(SUCCESS));
-       
+
         store.beginTransaction();
         assertThat(query("MATCH (r:Spring:Repository) RETURN r").getColumn("r"), hasItem(typeDescriptor(AnnotatedRepository.class)));
         store.commitTransaction();

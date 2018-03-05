@@ -124,8 +124,8 @@
 
     <constraint id="spring-component:ControllerMustOnlyDependOnServicesRepositoriesOrComponents">
         <requiresConcept refId="spring-component:VirtualDependency"/>
-        <description>A Spring controller can only have dependencies to other Spring components that are services
-            or repositories.
+        <description>A Spring controller can only have dependencies to other Spring components that are services or
+            repositories.
         </description>
         <cypher><![CDATA[
             MATCH
@@ -142,9 +142,9 @@
 
     <constraint id="spring-component:ServiceMustOnlyDependOnServicesRepositoriesOrComponents">
         <requiresConcept refId="spring-component:VirtualDependency"/>
-        <description>A Spring service can only have dependencies to other Spring components that are services or
-            repositories.
-        </description>
+        <description><![CDATA[
+            A Spring service can only have dependencies to other Spring components that are services or repositories.
+        ]]></description>
         <cypher><![CDATA[
             MATCH
               (service:Spring:Service)-[:DEPENDS_ON]->(other:Spring:Injectable)

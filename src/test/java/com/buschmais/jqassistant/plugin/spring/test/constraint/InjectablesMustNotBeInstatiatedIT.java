@@ -1,5 +1,21 @@
 package com.buschmais.jqassistant.plugin.spring.test.constraint;
 
+import java.util.List;
+import java.util.Map;
+
+import com.buschmais.jqassistant.core.analysis.api.Result;
+import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
+import com.buschmais.jqassistant.plugin.common.api.model.DependsOnDescriptor;
+import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescriptor;
+import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationBean;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ControllerInstantiatingService;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.Service;
+
+import org.hamcrest.Matcher;
+import org.junit.Test;
+
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.core.analysis.test.matcher.ConstraintMatcher.constraint;
@@ -8,22 +24,6 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescripto
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-
-import java.util.List;
-import java.util.Map;
-
-import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationBean;
-import org.hamcrest.Matcher;
-import org.junit.Test;
-
-import com.buschmais.jqassistant.core.analysis.api.Result;
-import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
-import com.buschmais.jqassistant.plugin.common.api.model.DependsOnDescriptor;
-import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescriptor;
-import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
-import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ControllerInstantiatingService;
-import com.buschmais.jqassistant.plugin.spring.test.set.injectables.Service;
 
 public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
 
