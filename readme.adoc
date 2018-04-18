@@ -7,14 +7,14 @@ It provides pre-defined rules for projects using the http://www.spring.org/[Spri
 ** Package layout, i.e. all classes of a Spring Boot application must be located in the package of the application
    class or a child package of it.
 ** Considers classes annotated with `@SpringBootApplication` and `@TestConfiguration` configuration classes and injectables.
-   
+
 * Spring Components
 ** Considers classes annotated with `@Component`, `@Service`, `@Repository` injectables.
 ** Considers classes that are returned from `@Bean` methods injectables.
 ** Considers Spring Data repositories injectables.
 ** Verifies dependencies between Spring components, i.e. controllers (must depend on services, repositories or components), services (must depend on other services, repositories or components) and repositories (must depend on other repositories and components).
 ** Requires `@Bean` methods to be used from with configuration classes only.
- 
+
 * Dependency Injection
 ** Prevents field injection (except in tests, in Strict mode)
 ** Requires injectables to be assigned to final fields (in Strict mode)
@@ -24,7 +24,7 @@ It provides pre-defined rules for projects using the http://www.spring.org/[Spri
 
 ** Recommends to use `@PostConstruct` and `@PreDestroy` over implementing `InitializingBean` and `DisposableBean`.
 ** Recommends to directly inject `BeanFactory`, `ApplicationContext`, and `ApplicationEventPublisher` instead of implementing callback interfaces.
- 
+
 
 * Transactions
 ** Disallow direct invocation of methods annotated with `@Transaction` from methods not annotated with that annotation within the same class
@@ -42,8 +42,8 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
 <project>
 
   <properties>
-    <jqassistant.version>1.3</jqassistant.version>
-    <jqassistant.spring.plugin.version>1.3.0-SNAPSHOT</jqassistant.spring.plugin.version>
+    <jqassistant.version>1.4.0-SNAPSHOT</jqassistant.version>
+    <jqassistant.spring.plugin.version>1.4-SNAPSHOT</jqassistant.spring.plugin.version>
   </properties>
 
   <build>
@@ -73,7 +73,7 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
           <!-- <3> -->
           <dependency>
             <groupId>com.buschmais.jqassistant.plugin</groupId>
-            <artifactId>jqassistant.plugin.spring</artifactId>
+            <artifactId>spring</artifactId>
             <version>${jqassistant.spring.plugin.version}</version>
           </dependency>
         </dependencies>
