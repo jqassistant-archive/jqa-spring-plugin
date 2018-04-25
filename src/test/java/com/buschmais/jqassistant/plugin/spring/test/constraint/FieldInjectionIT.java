@@ -67,7 +67,7 @@ public class FieldInjectionIT extends AbstractJavaPluginIT {
     private void verifyConstraintResult(Class<?> type, String fieldName) throws Exception {
         assertThat(validateConstraint("spring-injection:FieldInjectionIsNotAllowed").getStatus(), equalTo(FAILURE));
         store.beginTransaction();
-        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportWriter.getConstraintResults().values());
+        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportPlugin.getConstraintResults().values());
         assertThat(constraintViolations.size(), equalTo(1));
         Result<Constraint> result = constraintViolations.get(0);
         assertThat(result, result(constraint("spring-injection:FieldInjectionIsNotAllowed")));

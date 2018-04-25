@@ -50,7 +50,7 @@ public class SpringInterfacesIT extends AbstractJavaPluginIT {
         scanClasses(type);
         assertThat(validateConstraint(constraintId).getStatus(), equalTo(FAILURE));
         store.beginTransaction();
-        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportWriter.getConstraintResults().values());
+        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportPlugin.getConstraintResults().values());
         assertThat(constraintViolations.size(), equalTo(1));
         Result<Constraint> result = constraintViolations.get(0);
         assertThat(result, result(constraint(constraintId)));

@@ -24,7 +24,7 @@ public class TransactionalMethodMustNotBeInvokedFromSameClassIT extends Abstract
         scanClasses(TransactionalMethod.class);
         assertThat(validateConstraint("spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass").getStatus(), equalTo(FAILURE));
         store.beginTransaction();
-        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportWriter.getConstraintResults().values());
+        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportPlugin.getConstraintResults().values());
         assertThat(constraintViolations.size(), equalTo(1));
         Result<Constraint> result = constraintViolations.get(0);
         assertThat(result, result(constraint("spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass")));

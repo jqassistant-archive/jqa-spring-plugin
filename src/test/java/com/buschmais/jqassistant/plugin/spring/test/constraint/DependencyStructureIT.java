@@ -82,7 +82,7 @@ public class DependencyStructureIT extends AbstractJavaPluginIT {
     private void verifyConstraintViolation(String constraintId, String componentColumn, Class<?> component, Class<?>... dependencies) throws Exception {
         assertThat(validateConstraint(constraintId).getStatus(), equalTo(FAILURE));
         store.beginTransaction();
-        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportWriter.getConstraintResults().values());
+        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportPlugin.getConstraintResults().values());
         assertThat(constraintViolations.size(), equalTo(1));
         Result<Constraint> result = constraintViolations.get(0);
         assertThat(result, result(constraint(constraintId)));
