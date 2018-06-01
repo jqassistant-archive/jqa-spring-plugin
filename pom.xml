@@ -10,7 +10,7 @@
 
     <groupId>com.buschmais.jqassistant.plugin</groupId>
     <artifactId>spring</artifactId>
-    <version>1.4</version>
+    <version>1.5-SNAPSHOT</version>
 
     <name>jQAssistant Spring Framework Plugin</name>
     <url>http://jqassistant.org/</url>
@@ -45,7 +45,7 @@
         <connection>scm:git:git@github.com:buschmais/jqa-spring-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:buschmais/jqa-spring-plugin.git</developerConnection>
         <url>https://github.com/buschmais/jqa-spring-plugin</url>
-        <tag>1.4</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <repositories>
