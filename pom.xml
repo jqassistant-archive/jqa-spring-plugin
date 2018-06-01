@@ -42,6 +42,13 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git@github.com:buschmais/jqa-spring-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:buschmais/jqa-spring-plugin.git</developerConnection>
+        <url>https://github.com/buschmais/jqa-spring-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <repositories>
         <repository>
             <snapshots>
