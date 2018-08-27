@@ -6,6 +6,7 @@ import java.util.Map;
 import com.buschmais.jqassistant.core.analysis.api.Result;
 import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
 import com.buschmais.jqassistant.plugin.common.api.model.DependsOnDescriptor;
+import com.buschmais.jqassistant.plugin.common.api.model.TestDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationBean;
@@ -49,8 +50,8 @@ public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
         JavaClassesDirectoryDescriptor jar = getArtifactDescriptor("a");
         jar.setType("jar");
         JavaClassesDirectoryDescriptor testJar = getArtifactDescriptor("b");
-        testJar.setType("test-jar");
         store.create(testJar, DependsOnDescriptor.class, jar);
+        store.addDescriptorType(testJar, TestDescriptor.class);
         store.commitTransaction();
         scanClasses("a", Service.class);
         scanClasses("b", ControllerInstantiatingService.class);
