@@ -54,6 +54,14 @@ public class FieldInjectionIT extends AbstractJavaPluginIT {
         FieldDescriptor injectableField = (FieldDescriptor) row.get("InjectableField");
         assertThat(injectableField, fieldDescriptor(ServiceWithConstructorInjection.class,"repository"));
         store.commitTransaction();
+
+        store.beginTransaction();
+        for (FieldDescriptor field : query("MATCH (:Injectable)-[:DECLARES]->(field:Field) RETURN field").<FieldDescriptor>getColumn("field")) {
+            field.setSynthetic(true);
+        }
+        store.commitTransaction();
+
+        assertThat(validateConstraint("spring-injection:InjectablesShouldBeHeldInFinalFields").getStatus(), equalTo(SUCCESS));
     }
 
     @Test
