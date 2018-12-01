@@ -1,5 +1,5 @@
 ifndef::jqa-in-manual[== Version 1.6.0]
 ifdef::jqa-in-manual[== Spring Plugin 1.6.0]
 
-TBW
+No changes for this version.
 
