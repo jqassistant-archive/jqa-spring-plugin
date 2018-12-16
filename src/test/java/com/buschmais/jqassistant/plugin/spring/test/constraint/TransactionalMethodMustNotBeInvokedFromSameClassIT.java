@@ -9,7 +9,7 @@ import com.buschmais.jqassistant.core.analysis.api.rule.Constraint;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import com.buschmais.jqassistant.plugin.spring.test.set.transaction.TransactionalMethod;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.test.matcher.ConstraintMatcher.constraint;

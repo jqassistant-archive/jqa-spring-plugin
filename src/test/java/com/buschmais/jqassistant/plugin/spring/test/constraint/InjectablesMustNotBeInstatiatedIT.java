@@ -15,7 +15,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ControllerIn
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.Service;
 
 import org.hamcrest.Matcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;

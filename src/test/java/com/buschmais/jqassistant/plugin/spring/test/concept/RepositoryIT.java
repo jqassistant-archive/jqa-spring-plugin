@@ -3,7 +3,7 @@ package com.buschmais.jqassistant.plugin.spring.test.concept;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;

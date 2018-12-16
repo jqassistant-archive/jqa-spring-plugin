@@ -8,7 +8,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.fieldinjection.ServiceWi
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationBean;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescriptorMatcher.methodDescriptor;

@@ -12,7 +12,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.application.invalid.Cont
 import com.buschmais.jqassistant.plugin.spring.test.set.application.invalid.app.Application;
 
 import org.hamcrest.Matcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.SUCCESS;

@@ -13,7 +13,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.fieldinjection.Repositor
 import com.buschmais.jqassistant.plugin.spring.test.set.fieldinjection.ServiceWithConstructorInjection;
 import com.buschmais.jqassistant.plugin.spring.test.set.fieldinjection.ServiceWithFieldInjection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Component;
 
 import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
