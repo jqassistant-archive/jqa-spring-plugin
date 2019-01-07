@@ -26,18 +26,14 @@ public class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
     @Test
     public void allTypesInsideApplicationPackage() throws Exception {
         scanClassPathDirectory(getClassesDirectory(AllTypesInApplicationPackageIT.class));
-        store.beginTransaction();
         deletePackages(Application.class);
-        store.commitTransaction();
         assertThat(validateConstraint("spring-boot:AllTypesInApplicationPackage").getStatus(), equalTo(SUCCESS));
     }
 
     @Test
     public void typeOutsideApplicationPackage() throws Exception {
         scanClassPathDirectory(getClassesDirectory(AllTypesInApplicationPackageIT.class));
-        store.beginTransaction();
         deletePackages(Controller.class);
-        store.commitTransaction();
         Result<Constraint> result = validateConstraint("spring-boot:AllTypesInApplicationPackage");
         assertThat(result.getStatus(), equalTo(FAILURE));
         store.beginTransaction();
@@ -53,8 +49,12 @@ public class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
     }
 
     private void deletePackages(Class<?> rootClass) {
+        store.beginTransaction();
         Map<String, Object> params = MapBuilder.<String, Object> create("package", rootClass.getPackage().getName()).get();
         store.executeQuery("MATCH (p:Package) WHERE NOT p.fqn starts with {package} DETACH DELETE p", params);
+        store.commitTransaction();
+        // Clear the TX cache as the ids of the deleted nodes will be re-used by Neo4j when creating new nodes
+        store.getXOManager().clear();
     }
 
 }
