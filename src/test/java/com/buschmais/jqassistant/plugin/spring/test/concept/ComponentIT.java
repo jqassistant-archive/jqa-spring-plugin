@@ -84,11 +84,11 @@ public class ComponentIT extends AbstractSpringIT {
         scanClasses(TestController.class, AbstractTestController.class, TestController1.class, TestController2.class, TestService.class, TestServiceImpl.class,
                 TestRepository.class, TestRepositoryImpl.class);
         assertThat(applyConcept("spring-component:VirtualDependency").getStatus(), equalTo(SUCCESS));
-        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController1'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Injectable) RETURN c",
+        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController1'})-[:VIRTUAL_DEPENDS_ON]->(c:Spring:Injectable) RETURN c",
                 TestServiceImpl.class);
-        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController2'})-[:DEPENDS_ON{virtual:true}]->(c:Spring:Injectable) RETURN c",
+        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController2'})-[:VIRTUAL_DEPENDS_ON]->(c:Spring:Injectable) RETURN c",
                 TestServiceImpl.class);
-        verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON{virtual:true}]->(c:Spring:Injectable) RETURN c", TestRepositoryImpl.class);
+        verifyComponentDependencies("MATCH (:Spring:Service)-[:VIRTUAL_DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestRepositoryImpl.class);
     }
 
     private void verifyComponentDependencies(String query, Class<?>... dependencies) {

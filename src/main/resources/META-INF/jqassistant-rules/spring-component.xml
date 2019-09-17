@@ -104,8 +104,8 @@
 
     <concept id="spring-component:VirtualDependency">
         <requiresConcept refId="spring-component:AnnotatedInjectables"/>
-        <description>Creates a DEPENDS_ON relation between Spring Components which are connected through interfaces or
-            abstract types and adds a "virtual" property.
+        <description>Creates a VIRTUAL_DEPENDS_ON relation between Spring Components which are connected through interfaces or
+            abstract types.
         </description>
         <cypher><![CDATA[
           MATCH
@@ -114,7 +114,7 @@
             component <> otherComponent
             and not (component)-[:EXTENDS|IMPLEMENTS*]->(superType) // exclude components sharing the same super classes/interfaces
           MERGE
-            (component)-[d:DEPENDS_ON]->(otherComponent)
+            (component)-[d:VIRTUAL_DEPENDS_ON]->(otherComponent)
           SET
             d.virtual=true
           RETURN
@@ -129,7 +129,7 @@
         </description>
         <cypher><![CDATA[
             MATCH
-              (artifact:Artifact)-[:CONTAINS]->(controller:Spring:Controller)-[:DEPENDS_ON]->(other:Spring:Injectable)
+              (artifact:Artifact)-[:CONTAINS]->(controller:Spring:Controller)-[:DEPENDS_ON|VIRTUAL_DEPENDS_ON]->(other:Spring:Injectable)
             WHERE NOT (
                artifact:Test
                or other:Service
@@ -148,7 +148,7 @@
         ]]></description>
         <cypher><![CDATA[
             MATCH
-              (artifact:Artifact)-[:CONTAINS]->(service:Spring:Service)-[:DEPENDS_ON]->(other:Spring:Injectable)
+              (artifact:Artifact)-[:CONTAINS]->(service:Spring:Service)-[:DEPENDS_ON|VIRTUAL_DEPENDS_ON]->(other:Spring:Injectable)
             WHERE NOT (
               artifact:Test
               or other:Service
@@ -167,7 +167,7 @@
         </description>
         <cypher><![CDATA[
             MATCH
-              (artifact:Artifact)-[:CONTAINS]->(repository:Spring:Repository)-[:DEPENDS_ON]->(other:Spring:Injectable)
+              (artifact:Artifact)-[:CONTAINS]->(repository:Spring:Repository)-[:DEPENDS_ON|VIRTUAL_DEPENDS_ON]->(other:Spring:Injectable)
             WHERE NOT (
               artifact:Test
               or other:Repository
