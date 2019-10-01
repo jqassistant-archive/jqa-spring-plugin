@@ -54,7 +54,7 @@ You just need to activate the desired group of rules, either "spring-boot:Defaul
 
         <executions>
           <execution>
-            <id>default</id>
+            <id>cli-default</id>
             <goals>
               <goal>scan</goal>
               <goal>analyze</goal>
