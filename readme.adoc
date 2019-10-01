@@ -33,7 +33,7 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
 
 == Usage
 
-0. As there's no official release yet clone this https://github.com/buschmais/jqa-spring-plugin.git[repository], switch to branch "1.1" and build it using "mvn install"
+0. As there's no official release yet clone this https://github.com/buschmais/jqa-spring-plugin.git[repository], switch to tag "1.4" and build it using "mvn install"
 1. Add jQAssistant to the build section of your Spring Boot project and include the Spring plugin as a dependency
 3. Activate the desired group of rules, either "spring-boot:Default" or "spring-boot:Strict"
 
