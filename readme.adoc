@@ -33,17 +33,15 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
 
 == Usage
 
-0. As there's no official release yet clone this https://github.com/buschmais/jqa-spring-plugin.git[repository], switch to branch "1.1" and build it using "mvn install"
-1. Add jQAssistant to the build section of your Spring Boot project and include the Spring plugin as a dependency
-3. Activate the desired group of rules, either "spring-boot:Default" or "spring-boot:Strict"
+This plugin is part of the official jQAssistant release.
+You just need to activate the desired group of rules, either "spring-boot:Default" or "spring-boot:Strict"
 
 [source,xml]
 ----
 <project>
 
   <properties>
-    <jqassistant.version>1.4.0</jqassistant.version>
-    <jqassistant.spring.plugin.version>1.4</jqassistant.spring.plugin.version>
+    <jqassistant.version>1.7.0</jqassistant.version> <!-- define the jQAssistant version to use -->
   </properties>
 
   <build>
@@ -63,27 +61,17 @@ For more information on jQAssistant see https://www.jqassistant.org[^].
             </goals>
             <configuration>
               <groups>
-                <!-- <2> -->
+                <!-- <1> -->
                 <group>spring-boot:Strict</group>
               </groups>
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <!-- <3> -->
-          <dependency>
-            <groupId>com.buschmais.jqassistant.plugin</groupId>
-            <artifactId>spring</artifactId>
-            <version>${jqassistant.spring.plugin.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>
 </project>
 ----
 
-<1> Adds jQAssistant as a Maven plugin
-<2> Activates the group "spring-boot:Strict".
-<3> Declares the Spring Boot plugin of jQAssistant as dependency
+<1> Activates the group "spring-boot:Strict".
 
