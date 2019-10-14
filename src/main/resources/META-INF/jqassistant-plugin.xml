@@ -6,6 +6,7 @@
         <resource>spring-component.xml</resource>
         <resource>spring-data.xml</resource>
         <resource>spring-injection.xml</resource>
+        <resource>spring-mvc.xml</resource>
         <resource>spring-transaction.xml</resource>
     </rules>
 </jqa-plugin:jqassistant-plugin>
