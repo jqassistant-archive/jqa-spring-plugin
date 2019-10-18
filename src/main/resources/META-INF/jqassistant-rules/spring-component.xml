@@ -41,22 +41,6 @@
         ]]></cypher>
     </concept>
 
-    <concept id="spring-component:RestController">
-        <description>Labels all types annotated with "@org.springframework.stereotype.Controller" with "Spring",
-            "RestController", "Controller" and "Injectable".
-        </description>
-        <cypher><![CDATA[
-            MATCH
-              (restController:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
-            WHERE
-              annotationType.fqn = "org.springframework.stereotype.Controller"
-            SET
-              restController:Spring:RestController:Controller:Injectable
-            RETURN
-              restController as RestController
-        ]]></cypher>
-    </concept>
-
     <concept id="spring-component:Service">
         <description>Labels all types annotated with "@org.springframework.stereotype.Service" with "Spring", "Service"
             and "Injectable".
@@ -101,9 +85,9 @@
     </concept>
 
     <concept id="spring-component:AnnotatedInjectables">
-    	    <requiresConcept refId="spring-component:Component"/>
+    	<requiresConcept refId="spring-component:Component"/>
         <requiresConcept refId="spring-component:Service"/>
-        <requiresConcept refId="spring-component:*Controller"/>
+        <requiresConcept refId="spring-*:*Controller"/>
         <requiresConcept refId="spring-*:*Repository"/>
         <requiresConcept refId="spring-component:Configuration"/>
         <description>Labels all Spring Components as "Injectable".</description>
