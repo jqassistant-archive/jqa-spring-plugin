@@ -1,4 +1,5 @@
 ifndef::jqa-in-manual[== Version 1.8.0]
 ifdef::jqa-in-manual[== Spring Plugin 1.8.0]
 
-To be written.
+* Added meta-annotated Spring annotations to concepts, e.g. `@SpringBootApplication` will be also labeled with `Configuration`
+

@@ -20,7 +20,6 @@
         analyze Spring related artifacts.
     </description>
 
-
     <organization>
         <name>buschmais GbR</name>
         <url>http://www.buschmais.com</url>
@@ -59,19 +58,6 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <properties>
         <jqa-java-plugin.version>1.8.0-SNAPSHOT</jqa-java-plugin.version>
         <jqa-plugin-common.version>1.8.0-SNAPSHOT</jqa-plugin-common.version>
@@ -79,6 +65,27 @@
         <org.springframework.boot_version>1.3.3.RELEASE</org.springframework.boot_version>
         <org.springframework.data_version>1.9.4.RELEASE</org.springframework.data_version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>

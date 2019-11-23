@@ -23,12 +23,11 @@ import static org.junit.Assert.assertThat;
 
 public class DependencyStructureIT extends AbstractJavaPluginIT {
 
-    private static final String CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES = "spring-component:ControllerMustOnlyDependOnServicesRepositoriesOrComponents";
-    	private static final String CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES = "spring-component:ServiceMustOnlyDependOnServicesRepositoriesOrComponents";
-    	private static final String CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES = "spring-component:RepositoryMustOnlyDependOnRepositoriesOrComponents";
+    private static final String CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES = "spring-component:ControllerMustOnlyDependOnServicesRepositories";
+    private static final String CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES = "spring-component:ServiceMustOnlyDependOnServicesRepositories";
+    private static final String CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES = "spring-component:RepositoryMustOnlyDependOnRepositories";
 
-
-		@Test
+    @Test
     public void controllerDependsOnService() throws Exception {
         scanClasses(TestController1.class, TestService1.class);
         assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
@@ -75,8 +74,7 @@ public class DependencyStructureIT extends AbstractJavaPluginIT {
     @Test
     public void repositoryDependsOnService() throws Exception {
         scanClasses(TestRepositoryWithServiceDependency.class, TestService1.class);
-        verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithServiceDependency.class,
-                TestService1.class);
+        verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithServiceDependency.class, TestService1.class);
     }
 
     private void verifyConstraintViolation(String constraintId, String componentColumn, Class<?> component, Class<?>... dependencies) throws Exception {

@@ -1,9 +1,9 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
 
     <group id="spring-component:Default">
-        <includeConstraint refId="spring-component:ControllerMustOnlyDependOnServicesRepositoriesOrComponents"/>
-        <includeConstraint refId="spring-component:ServiceMustOnlyDependOnServicesRepositoriesOrComponents"/>
-        <includeConstraint refId="spring-component:RepositoryMustOnlyDependOnRepositoriesOrComponents"/>
+        <includeConstraint refId="spring-component:ControllerMustOnlyDependOnServicesRepositories"/>
+        <includeConstraint refId="spring-component:ServiceMustOnlyDependOnServicesRepositories"/>
+        <includeConstraint refId="spring-component:RepositoryMustOnlyDependOnRepositories"/>
     </group>
 
     <group id="spring-component:Strict">
@@ -17,7 +17,17 @@
             MATCH
               (component:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.stereotype.Component"
+              annotationType.fqn in [
+                "org.springframework.stereotype.Component",
+                "org.springframework.boot.autoconfigure.SpringBootApplication",
+                "org.springframework.context.annotation.Configuration",
+                "org.springframework.data.web.config.SpringDataWebConfigurationMixin",
+                "org.springframework.stereotype.Controller",
+                "org.springframework.stereotype.Repository",
+                "org.springframework.stereotype.Service",
+                "org.springframework.web.bind.annotation.ControllerAdvice",
+                "org.springframework.web.bind.annotation.RestController"
+              ]
             SET
               component:Spring:Component:Injectable
             RETURN
@@ -26,6 +36,7 @@
     </concept>
 
     <concept id="spring-component:Controller">
+        <requiresConcept refId="spring-*:*Controller" />
         <description>Labels all types annotated with "@org.springframework.stereotype.Controller" with "Spring",
             "Controller" and "Injectable".
         </description>
@@ -33,7 +44,10 @@
             MATCH
               (controller:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.stereotype.Controller"
+              annotationType.fqn in [
+                "org.springframework.stereotype.Controller",
+                "org.springframework.web.bind.annotation.RestController"
+              ]
             SET
               controller:Spring:Controller:Injectable
             RETURN
@@ -49,7 +63,9 @@
             MATCH
               (service:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.stereotype.Service"
+              annotationType.fqn in [
+                "org.springframework.stereotype.Service"
+              ]
             SET
               service:Spring:Service:Injectable
             RETURN
@@ -76,7 +92,11 @@
             MATCH
               (configuration:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.context.annotation.Configuration"
+              annotationType.fqn in [
+                "org.springframework.context.annotation.Configuration",
+                "org.springframework.boot.autoconfigure.SpringBootApplication",
+                "org.springframework.data.web.config.SpringDataWebConfigurationMixin"
+              ]
             SET
               configuration:Spring:Configuration:Injectable
             RETURN
@@ -87,8 +107,8 @@
     <concept id="spring-component:AnnotatedInjectables">
     	<requiresConcept refId="spring-component:Component"/>
         <requiresConcept refId="spring-component:Service"/>
-        <requiresConcept refId="spring-*:*Controller"/>
-        <requiresConcept refId="spring-*:*Repository"/>
+        <requiresConcept refId="spring-component:Controller"/>
+        <requiresConcept refId="spring-component:Repository"/>
         <requiresConcept refId="spring-component:Configuration"/>
         <description>Labels all Spring Components as "Injectable".</description>
         <cypher><![CDATA[
@@ -121,7 +141,7 @@
       ]]></cypher>
     </concept>
 
-    <constraint id="spring-component:ControllerMustOnlyDependOnServicesRepositoriesOrComponents">
+    <constraint id="spring-component:ControllerMustOnlyDependOnServicesRepositories">
         <requiresConcept refId="spring-component:VirtualDependency"/>
         <description>A Spring controller can only have dependencies to other Spring components that are services or
             repositories.
@@ -133,14 +153,13 @@
                artifact:Test
                or other:Service
                or other:Repository
-               or other:Component
             )
             RETURN
               controller as Controller, collect(other) as InvalidDependencies
         ]]></cypher>
     </constraint>
 
-    <constraint id="spring-component:ServiceMustOnlyDependOnServicesRepositoriesOrComponents">
+    <constraint id="spring-component:ServiceMustOnlyDependOnServicesRepositories">
         <requiresConcept refId="spring-component:VirtualDependency"/>
         <description><![CDATA[
             A Spring service can only have dependencies to other Spring components that are services or repositories.
@@ -152,7 +171,6 @@
               artifact:Test
               or other:Service
               or other:Repository
-              or other:Component
             )
             RETURN
               service as Service, collect(other) as InvalidDependencies
@@ -160,7 +178,7 @@
     </constraint>
 
 
-    <constraint id="spring-component:RepositoryMustOnlyDependOnRepositoriesOrComponents">
+    <constraint id="spring-component:RepositoryMustOnlyDependOnRepositories">
         <requiresConcept refId="spring-component:VirtualDependency"/>
         <description>A Spring repository can only have dependencies to other Spring components that are repositories.
         </description>
@@ -170,7 +188,6 @@
             WHERE NOT (
               artifact:Test
               or other:Repository
-              or other:Component
             )
             RETURN
               repository as Repository, collect(other) as InvalidDependencies
