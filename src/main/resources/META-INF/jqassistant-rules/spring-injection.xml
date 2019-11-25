@@ -48,19 +48,18 @@
 
     <constraint id="spring-injection:InjectablesMustNotBeInstantiated">
         <requiresConcept refId="spring-injection:Injectable"/>
-        <description>Injectables types must not be instantiated directly except by @Bean methods or test code.
-        </description>
+        <description>If the constructor of an Injectable is called from another Injectable, then the caller must be a BeanProducer.</description>
         <cypher><![CDATA[
             MATCH
               (injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
-              (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(method:Method)-[newInstance:INVOKES]->(constructor)
+              (artifact:Artifact)-[:CONTAINS]->(type:Injectable:Type)-[:DECLARES]->(method:Method),
+              shortestPath((method)-[:INVOKES*]->(constructor))
             WHERE NOT (
               artifact:Test
               OR method:Spring:BeanProducer
             )
             RETURN
-              type as Type, method as Method, injectable as Injectable,
-              newInstance.lineNumber as LineNumber
+              type as Type, method as Method, injectable as Injectable
         ]]></cypher>
     </constraint>
 
