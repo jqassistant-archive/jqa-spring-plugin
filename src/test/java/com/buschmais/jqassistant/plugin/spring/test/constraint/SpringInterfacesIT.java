@@ -4,17 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.buschmais.jqassistant.core.analysis.api.Result;
+import com.buschmais.jqassistant.core.report.api.model.Result;
 import com.buschmais.jqassistant.core.rule.api.model.Constraint;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.interfaces.*;
+import com.buschmais.jqassistant.plugin.spring.test.set.interfaces.TestApplicationContextAwareBean;
+import com.buschmais.jqassistant.plugin.spring.test.set.interfaces.TestApplicationEventPublisherAwareBean;
+import com.buschmais.jqassistant.plugin.spring.test.set.interfaces.TestBeanFactoryAwareBean;
+import com.buschmais.jqassistant.plugin.spring.test.set.interfaces.TestDisposableBean;
+import com.buschmais.jqassistant.plugin.spring.test.set.interfaces.TestInitializingBean;
 
 import org.junit.jupiter.api.Test;
 
-import static com.buschmais.jqassistant.core.analysis.api.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.analysis.test.matcher.ConstraintMatcher.constraint;
 import static com.buschmais.jqassistant.core.analysis.test.matcher.ResultMatcher.result;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
