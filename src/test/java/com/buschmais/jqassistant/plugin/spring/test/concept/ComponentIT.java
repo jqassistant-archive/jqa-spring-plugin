@@ -2,6 +2,7 @@ package com.buschmais.jqassistant.plugin.spring.test.concept;
 
 import java.util.List;
 
+import com.buschmais.jqassistant.core.shared.annotation.ToBeRemovedInVersion;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.Controller;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
@@ -80,6 +81,8 @@ public class ComponentIT extends AbstractSpringIT {
     }
 
     @Test
+    @Deprecated
+    @ToBeRemovedInVersion(major = 1, minor = 9)
     public void virtualComponentDependencies() throws Exception {
         scanClasses(TestController.class, AbstractTestController.class, TestController1.class, TestController2.class, TestService.class, TestServiceImpl.class,
                 TestRepository.class, TestRepositoryImpl.class);

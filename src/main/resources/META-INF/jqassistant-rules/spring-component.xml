@@ -126,6 +126,7 @@
         <description>Creates a VIRTUAL_DEPENDS_ON relation between Spring Components which are connected through interfaces or
             abstract types.
         </description>
+        <deprecated>This concept has been replaced by the more generic concept "java:VirtualDependsOn".</deprecated>
         <cypher><![CDATA[
           MATCH
              (component:Spring:Injectable)-[:DEPENDS_ON]->(superType)<-[:IMPLEMENTS|EXTENDS*]-(otherComponent:Spring:Injectable)
@@ -134,15 +135,14 @@
             and not (component)-[:EXTENDS|IMPLEMENTS*]->(superType) // exclude components sharing the same super classes/interfaces
           MERGE
             (component)-[d:VIRTUAL_DEPENDS_ON]->(otherComponent)
-          SET
-            d.virtual=true
           RETURN
             component as Dependent, collect(distinct otherComponent) as Dependencies
       ]]></cypher>
     </concept>
 
     <constraint id="spring-component:ControllerMustOnlyDependOnServicesRepositories">
-        <requiresConcept refId="spring-component:VirtualDependency"/>
+        <requiresConcept refId="java:VirtualDependsOn"/>
+        <requiresConcept refId="spring-component:AnnotatedInjectables"/>
         <description>A Spring controller can only have dependencies to other Spring components that are services or
             repositories.
         </description>
@@ -160,7 +160,8 @@
     </constraint>
 
     <constraint id="spring-component:ServiceMustOnlyDependOnServicesRepositories">
-        <requiresConcept refId="spring-component:VirtualDependency"/>
+        <requiresConcept refId="java:VirtualDependsOn"/>
+        <requiresConcept refId="spring-component:AnnotatedInjectables"/>
         <description><![CDATA[
             A Spring service can only have dependencies to other Spring components that are services or repositories.
         ]]></description>
@@ -179,7 +180,8 @@
 
 
     <constraint id="spring-component:RepositoryMustOnlyDependOnRepositories">
-        <requiresConcept refId="spring-component:VirtualDependency"/>
+        <requiresConcept refId="java:VirtualDependsOn"/>
+        <requiresConcept refId="spring-component:AnnotatedInjectables"/>
         <description>A Spring repository can only have dependencies to other Spring components that are repositories.
         </description>
         <cypher><![CDATA[
