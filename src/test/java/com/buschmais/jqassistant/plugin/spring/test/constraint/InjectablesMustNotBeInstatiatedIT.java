@@ -9,7 +9,12 @@ import com.buschmais.jqassistant.plugin.common.api.model.DependsOnDescriptor;
 import com.buschmais.jqassistant.plugin.common.api.model.TestDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.injectables.*;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ControllerInstantiatingService;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.NonInjectableInstantiatingService;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.Service;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.subclass.ConfigurationBean;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.subclass.SubClassOfInjectable;
 
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
@@ -60,5 +65,13 @@ public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
         scanClasses("a", Service.class);
         scanClasses("b", ControllerInstantiatingService.class);
         assertThat(validateConstraint("spring-injection:InjectablesMustNotBeInstantiated").getStatus(), equalTo(SUCCESS));
+    }
+
+    @Test
+    @TestStore(type = TestStore.Type.FILE)
+    public void configInstantiatesSubClassOfInjectable() throws Exception {
+        scanClasses("a", ConfigurationBean.class, SubClassOfInjectable.class);
+        Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeInstantiated");
+        assertThat(result.getStatus(), equalTo(SUCCESS));
     }
 }
