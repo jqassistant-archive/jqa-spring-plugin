@@ -1,20 +1,18 @@
 package com.buschmais.jqassistant.plugin.spring.test.set.constructors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ServiceWritingConstructorField {
+public class ServiceImpl {
 
-    // Static fields are okay
-    static final String CONSTANT = "CONSTANT";
+    private RepositoryImpl repository;
 
     private String value;
 
     @Autowired
-    public ServiceWritingConstructorField(@Value("value") String value) {
-        this.value = value;
+    public ServiceImpl(RepositoryImpl repository) {
+        this.repository = repository;
     }
 
     public String getValue() {
@@ -23,5 +21,13 @@ public class ServiceWritingConstructorField {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public RepositoryImpl getRepository() {
+        return repository;
+    }
+
+    public void setRepository(RepositoryImpl repository) {
+        this.repository = repository;
     }
 }
