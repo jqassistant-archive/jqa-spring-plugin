@@ -24,8 +24,8 @@
 
     <concept id="spring-transaction:TransactionalMethod">
         <requiresConcept refId="spring-transaction:TransactionalClass"/>
-        <description>Label all methods which are annotated with
-            "@org.springframework.transaction.annotation.Transactional" with "Spring" and "Transactional".
+        <description>
+            Label all methods which are annotated with "@org.springframework.transaction.annotation.Transactional" with "Spring" and "Transactional".
         </description>
         <cypher><![CDATA[
            MATCH
@@ -42,8 +42,8 @@
     </concept>
 
     <concept id="spring-transaction:TransactionalClass">
-        <description>Labels a classes which are annotated with
-            "@org.springframework.transaction.annotation.Transactional" and their declared methods with "Spring" and
+        <description>
+            Label all classes annotated with "@org.springframework.transaction.annotation.Transactional"and their declared methods with "Spring" and
             "Transactional".
         </description>
         <cypher><![CDATA[
