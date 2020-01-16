@@ -26,7 +26,7 @@ public class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPlug
 	@Test
 	public void reportsInjectablesInStaticFields() throws Exception {
 
-		scanClasses(MyComponent.class, MyDependency.class);
+        scanClasses(MyComponent.class, MyDependency.class, MyDependencyImpl.class);
 
 		Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeHeldInStaticVariables");
 
@@ -39,7 +39,7 @@ public class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPlug
 		TypeDescriptor descriptor = (TypeDescriptor) map.get("Type");
 
 		assertThat(descriptor, typeDescriptor(MyComponent.class));
-		assertThat(map.get("Field"), is((Object) "dependency"));
+        assertThat(map.get("Field"), is("dependency"));
 
 		store.rollbackTransaction();
 	}
@@ -47,7 +47,7 @@ public class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPlug
 	@Test
 	public void reportsStaticReferenceToInjectable() throws Exception {
 
-		scanClasses(MyComponent.class, MyDependency.class);
+        scanClasses(MyComponent.class, MyDependency.class, MyDependencyImpl.class);
 
 		Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeAccessedStatically");
 
@@ -59,10 +59,10 @@ public class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPlug
 		Map<String, Object> map = result.getRows().get(0);
 		MethodDescriptor descriptor = (MethodDescriptor) map.get("Method");
 
-		assertThat(descriptor.getDeclaringType(), typeDescriptor(MyDependency.class));
+        assertThat(descriptor.getDeclaringType(), typeDescriptor(MyDependencyImpl.class));
 		assertThat(descriptor.getName(), equalTo("someMethod"));
 
-		assertThat(map.get("Field"), is((Object) "dependency"));
+        assertThat(map.get("Field"), is("dependency"));
 
 		store.rollbackTransaction();
 	}
@@ -72,8 +72,11 @@ public class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPlug
 		static MyDependency dependency;
 	}
 
+    interface MyDependency {
+    }
+
 	@Component
-	static class MyDependency {
+    static class MyDependencyImpl implements MyDependency {
 
 		public static MyDependency someMethod() {
 			return MyComponent.dependency;

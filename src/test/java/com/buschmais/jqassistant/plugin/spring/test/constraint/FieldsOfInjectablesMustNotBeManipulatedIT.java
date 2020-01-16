@@ -10,6 +10,7 @@ import com.buschmais.jqassistant.plugin.java.api.model.FieldDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.WritesDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
+import com.buschmais.jqassistant.plugin.spring.test.set.constructors.Repository;
 import com.buschmais.jqassistant.plugin.spring.test.set.constructors.RepositoryImpl;
 import com.buschmais.jqassistant.plugin.spring.test.set.constructors.SecurityProperties;
 import com.buschmais.jqassistant.plugin.spring.test.set.constructors.ServiceImpl;
@@ -29,7 +30,7 @@ public class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPlugi
     @Test
     public void constructorFieldsMustNotBeManipulated() throws Exception {
         // given
-        scanClasses(ServiceImpl.class, RepositoryImpl.class);
+        scanClasses(ServiceImpl.class, Repository.class, RepositoryImpl.class);
         // when
         Result<Constraint> result = validateConstraint("spring-injection:FieldsOfInjectablesMustNotBeManipulated");
         // then

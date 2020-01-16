@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceImpl {
 
-    private RepositoryImpl repository;
+    private Repository repository;
 
     private String value;
 
@@ -23,11 +23,11 @@ public class ServiceImpl {
         this.value = value;
     }
 
-    public RepositoryImpl getRepository() {
+    public Repository getRepository() {
         return repository;
     }
 
-    public void setRepository(RepositoryImpl repository) {
+    public void setRepository(Repository repository) {
         this.repository = repository;
     }
 }
