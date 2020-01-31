@@ -121,25 +121,6 @@
         ]]></cypher>
     </concept>
 
-    <concept id="spring-component:VirtualDependency">
-        <requiresConcept refId="spring-component:AnnotatedInjectables"/>
-        <description>Creates a VIRTUAL_DEPENDS_ON relation between Spring Components which are connected through interfaces or
-            abstract types.
-        </description>
-        <deprecated>This concept has been replaced by the more generic concept "java:VirtualDependsOn".</deprecated>
-        <cypher><![CDATA[
-          MATCH
-             (component:Spring:Injectable)-[:DEPENDS_ON]->(superType)<-[:IMPLEMENTS|EXTENDS*]-(otherComponent:Spring:Injectable)
-          WHERE
-            component <> otherComponent
-            and not (component)-[:EXTENDS|IMPLEMENTS*]->(superType) // exclude components sharing the same super classes/interfaces
-          MERGE
-            (component)-[d:VIRTUAL_DEPENDS_ON]->(otherComponent)
-          RETURN
-            component as Dependent, collect(distinct otherComponent) as Dependencies
-      ]]></cypher>
-    </concept>
-
     <constraint id="spring-component:ControllerMustOnlyDependOnServicesRepositories">
         <requiresConcept refId="java:VirtualDependsOn"/>
         <requiresConcept refId="spring-component:AnnotatedInjectables"/>

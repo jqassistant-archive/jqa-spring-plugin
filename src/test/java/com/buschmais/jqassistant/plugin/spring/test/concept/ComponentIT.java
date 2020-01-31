@@ -2,14 +2,12 @@ package com.buschmais.jqassistant.plugin.spring.test.concept;
 
 import java.util.List;
 
-import com.buschmais.jqassistant.core.shared.annotation.ToBeRemovedInVersion;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepository;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.Controller;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.Service;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepository1;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestService1;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.virtual.*;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
 
 import org.junit.jupiter.api.Test;
@@ -78,20 +76,6 @@ public class ComponentIT extends AbstractSpringIT {
         assertThat(applyConcept("spring-component:Repository").getStatus(), equalTo(SUCCESS));
         verifyComponentDependencies("MATCH (:Spring:Controller)-[:DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestService1.class);
         verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestRepository1.class);
-    }
-
-    @Test
-    @Deprecated
-    @ToBeRemovedInVersion(major = 1, minor = 9)
-    public void virtualComponentDependencies() throws Exception {
-        scanClasses(TestController.class, AbstractTestController.class, TestController1.class, TestController2.class, TestService.class, TestServiceImpl.class,
-                TestRepository.class, TestRepositoryImpl.class);
-        assertThat(applyConcept("spring-component:VirtualDependency").getStatus(), equalTo(SUCCESS));
-        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController1'})-[:VIRTUAL_DEPENDS_ON]->(c:Spring:Injectable) RETURN c",
-                TestServiceImpl.class);
-        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController2'})-[:VIRTUAL_DEPENDS_ON]->(c:Spring:Injectable) RETURN c",
-                TestServiceImpl.class);
-        verifyComponentDependencies("MATCH (:Spring:Service)-[:VIRTUAL_DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestRepositoryImpl.class);
     }
 
     private void verifyComponentDependencies(String query, Class<?>... dependencies) {
