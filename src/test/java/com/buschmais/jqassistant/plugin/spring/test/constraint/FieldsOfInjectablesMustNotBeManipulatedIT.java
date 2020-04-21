@@ -66,7 +66,7 @@ public class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPlugi
         store.beginTransaction();
         Map<String, Object> params = new HashMap<>();
         params.put("service", ServiceImpl.class.getName());
-        List<FieldDescriptor> fields = query("MATCH (:Type{fqn:{service}})-[:DECLARES]->(field:Field) SET field.synthetic=true RETURN field", params)
+        List<FieldDescriptor> fields = query("MATCH (:Type{fqn:$service})-[:DECLARES]->(field:Field) SET field.synthetic=true RETURN field", params)
                 .getColumn("field");
         assertThat(fields, hasItems(fieldDescriptor(ServiceImpl.class, "repository")));
         store.commitTransaction();
