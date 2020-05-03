@@ -63,7 +63,7 @@
         <jqa-plugin-common.version>1.9.0-SNAPSHOT</jqa-plugin-common.version>
         <org.springframework.version>3.0.0.RELEASE</org.springframework.version>
         <org.springframework.boot_version>1.3.3.RELEASE</org.springframework.boot_version>
-        <org.springframework.data_version>1.9.4.RELEASE</org.springframework.data_version>
+        <org.springframework.data_version>1.11.23.RELEASE</org.springframework.data_version>
     </properties>
 
     <build>
