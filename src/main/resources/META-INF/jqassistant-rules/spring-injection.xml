@@ -128,6 +128,7 @@
             RETURN
               source as InjectableType, field as InjectableField
         ]]></cypher>
+        <report primaryColumn="InjectableField"/>
     </constraint>
 
     <constraint id="spring-injection:FieldsOfInjectablesMustNotBeManipulated">
@@ -150,7 +151,7 @@
             RETURN
                injectable as Injectable, writes as WriteToInjectableField, field as Field
         ]]></cypher>
-        <report primaryColumn="WriteToInjectableField"/>
+        <report primaryColumn="Field"/>
     </constraint>
 
     <constraint id="spring-injection:AvoidInitializingBean">

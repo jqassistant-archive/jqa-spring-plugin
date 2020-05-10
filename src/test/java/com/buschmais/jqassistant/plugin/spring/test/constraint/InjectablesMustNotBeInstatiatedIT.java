@@ -68,7 +68,6 @@ public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
     }
 
     @Test
-    @TestStore(type = TestStore.Type.FILE)
     public void configInstantiatesSubClassOfInjectable() throws Exception {
         scanClasses("a", ConfigurationBean.class, SubClassOfInjectable.class);
         Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeInstantiated");
