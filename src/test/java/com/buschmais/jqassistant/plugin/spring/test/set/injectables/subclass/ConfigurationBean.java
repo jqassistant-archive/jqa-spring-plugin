@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ConfigurationBean {
+public class ConfigurationBean extends AbstractConfigurationBean {
 
     @Bean
     public CustomizableTraceInterceptor methodTraceLoggingInterceptor() {

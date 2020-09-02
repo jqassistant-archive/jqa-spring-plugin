@@ -42,7 +42,7 @@ public class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPlugi
         WritesDescriptor writeToInjectableField = (WritesDescriptor) row.get("WriteToInjectableField");
         TypeDescriptor injectable = (TypeDescriptor) row.get("Injectable");
         FieldDescriptor field = (FieldDescriptor) row.get("Field");
-        assertThat(writeToInjectableField.getLineNumber(), equalTo(31));
+        assertThat(writeToInjectableField.getLineNumber(), equalTo(55));
         assertThat(injectable, typeDescriptor(ServiceImpl.class));
         assertThat(field, fieldDescriptor(ServiceImpl.class, "repository"));
 
