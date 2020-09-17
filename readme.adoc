@@ -1,7 +1,5 @@
 = jQAssistant Spring Framework Plugin
 
-image::https://github.com/jQAssistant/jqa-spring-plugin/workflows/jQA%20Standard%20CI%20Build/badge.svg[jQA Standard CI Build]
-
 This is the Spring Framework Plugin of https://www.jqassistant.org[jQAssistant].
 It provides pre-defined rules for projects using the http://www.spring.org/[Spring Framework], e.g.:
 
