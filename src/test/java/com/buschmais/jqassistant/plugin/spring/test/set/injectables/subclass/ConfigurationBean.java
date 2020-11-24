@@ -8,8 +8,12 @@ import org.springframework.context.annotation.Configuration;
 public class ConfigurationBean extends AbstractConfigurationBean {
 
     @Bean
-    public CustomizableTraceInterceptor methodTraceLoggingInterceptor() {
+    public CustomizableTraceInterceptor abstractClass() {
         return new SubClassOfInjectable();
     }
 
+    @Bean
+    public SubClassOfInjectable subClass() {
+        return new SubClassOfInjectable();
+    }
 }

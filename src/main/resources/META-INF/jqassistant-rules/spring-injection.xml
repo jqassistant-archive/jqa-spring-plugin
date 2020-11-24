@@ -59,7 +59,7 @@
               OR method:Spring:BeanProducer
               OR (
                 method:Constructor
-                AND (type)-[:EXTENDS]->(injectable)
+                AND (type)-[:EXTENDS*0..]->(injectable)
               )
             )
             RETURN

@@ -5,11 +5,16 @@ import org.springframework.aop.interceptor.CustomizableTraceInterceptor;
 
 public class SubClassOfInjectable extends CustomizableTraceInterceptor {
 
-    SubClassOfInjectable() {
+    SubClassOfInjectable(boolean useDynamicLogger) {
         setEnterMessage("> [ENTRY] " + PLACEHOLDER_METHOD_NAME + "(" + PLACEHOLDER_ARGUMENTS + ")");
         setExitMessage("< [EXIT] " + PLACEHOLDER_METHOD_NAME + " @ " + PLACEHOLDER_INVOCATION_TIME + " ms: " + PLACEHOLDER_RETURN_VALUE);
         setExceptionMessage("< [THROW] " + PLACEHOLDER_METHOD_NAME + " : " + PLACEHOLDER_EXCEPTION);
-        setUseDynamicLogger(true);
+        setUseDynamicLogger(useDynamicLogger);
+    }
+
+    SubClassOfInjectable() {
+        // This constructor is allowed to call the other constructor of the injectable
+        this(true);
     }
 
     @Override
