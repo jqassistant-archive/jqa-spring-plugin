@@ -14,6 +14,7 @@
     <group id="spring-injection:Strict">
         <includeConstraint refId="spring-injection:FieldInjectionIsNotAllowed"/>
         <includeConstraint refId="spring-injection:InjectablesShouldBeHeldInFinalFields"/>
+        <includeConstraint refId="spring-injection:JdkClassesMustNotBeInjectables"/>
     </group>
 
     <concept id="spring-injection:Injectable">
@@ -236,6 +237,19 @@
               AND NOT artifact:Test
             RETURN
               method as Method, field.name as Field
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:JdkClassesMustNotBeInjectables">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>JDK classes must not be injectables.</description>
+        <cypher><![CDATA[
+            MATCH
+              (type:Type:Spring:Injectable)
+            WHERE
+              type.fqn STARTS WITH "java."
+            RETURN
+              type.fqn AS Injectable
         ]]></cypher>
     </constraint>
 </jqa:jqassistant-rules>

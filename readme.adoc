@@ -14,6 +14,7 @@ It provides pre-defined rules for projects using the http://www.spring.org/[Spri
 ** Considers Spring Data repositories injectables.
 ** Verifies dependencies between Spring components, i.e. controllers (must depend on services, repositories or components), services (must depend on other services, repositories or components) and repositories (must depend on other repositories and components).
 ** Requires `@Bean` methods to be used from with configuration classes only.
+** Requires that JDK classes are not injectables.
 
 * Dependency Injection
 ** Prevents field injection (except in tests, in Strict mode)
