@@ -21,7 +21,7 @@ import static com.buschmais.jqassistant.core.analysis.test.matcher.ResultMatcher
 import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SpringInterfacesIT extends AbstractJavaPluginIT {
 

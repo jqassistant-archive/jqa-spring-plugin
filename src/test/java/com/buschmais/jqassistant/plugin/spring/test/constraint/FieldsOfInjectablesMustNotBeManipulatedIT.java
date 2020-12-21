@@ -22,8 +22,8 @@ import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCC
 import static com.buschmais.jqassistant.plugin.java.test.matcher.FieldDescriptorMatcher.fieldDescriptor;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
 
 public class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPluginIT {
 

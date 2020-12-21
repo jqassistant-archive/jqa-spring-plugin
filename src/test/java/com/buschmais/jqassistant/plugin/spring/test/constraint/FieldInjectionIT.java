@@ -24,7 +24,7 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.FieldDescriptor
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FieldInjectionIT extends AbstractJavaPluginIT {
 

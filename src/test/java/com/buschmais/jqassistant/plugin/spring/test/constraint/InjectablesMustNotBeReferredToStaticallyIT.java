@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Component;
 
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 /**
  * Integration tests for rules rejecting static references to injectables.
