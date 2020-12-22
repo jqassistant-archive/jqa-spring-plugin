@@ -42,9 +42,8 @@ public class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
         Map<String, Object> row = rows.get(0);
         assertThat(row.get("Application"), (Matcher<? super Object>) typeDescriptor(Application.class));
         assertThat(row.get("ApplicationPackage"), (Matcher<? super Object>) packageDescriptor(Application.class.getPackage()));
-        List<TypeDescriptor> typesOutsideApplicationPackage = (List<TypeDescriptor>) row.get("TypesOutsideApplicationPackage");
-        assertThat(typesOutsideApplicationPackage.size(), equalTo(1));
-        assertThat(typesOutsideApplicationPackage.get(0), typeDescriptor(Controller.class));
+        TypeDescriptor typeOutsideApplicationPackage = (TypeDescriptor) row.get("TypeOutsideApplicationPackage");
+        assertThat(typeOutsideApplicationPackage, typeDescriptor(Controller.class));
         store.commitTransaction();
     }
 

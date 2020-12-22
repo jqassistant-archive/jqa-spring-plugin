@@ -20,6 +20,7 @@
             RETURN
               type as Type, callingMethod as Method, calledMethod as TransactionalMethod, invokes.lineNumber as LineNumber
         ]]></cypher>
+        <report primaryColumn="callingMethod"/>
     </constraint>
 
     <concept id="spring-transaction:TransactionalMethod">
@@ -37,7 +38,7 @@
            SET
              transactionalMethod:Spring:Transactional
            RETURN
-             transactionalMethod as TransactionalMethod
+             type as Type, transactionalMethod as TransactionalMethod
         ]]></cypher>
     </concept>
 

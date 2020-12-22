@@ -40,7 +40,7 @@
             WHERE NOT
               (artifact:Test OR (applicationPackage)-[:CONTAINS*0..]->(package))
             RETURN
-              application as Application, applicationPackage as ApplicationPackage, collect(type) as TypesOutsideApplicationPackage
+              type as TypeOutsideApplicationPackage, application as Application, applicationPackage as ApplicationPackage
         ]]></cypher>
     </constraint>
 

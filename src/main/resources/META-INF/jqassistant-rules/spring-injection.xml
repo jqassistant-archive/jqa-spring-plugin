@@ -43,7 +43,7 @@
               injectable:Spring:Injectable,
               beanProducer:Spring:BeanProducer
             RETURN
-              injectable as Injectable, beanProducer as BeanProducer
+              injectable as Injectable, collect(beanProducer) as BeanProducers
         ]]></cypher>
     </concept>
 
@@ -66,6 +66,7 @@
             RETURN
               type as Type, method as Method, injectable as Injectable
         ]]></cypher>
+        <report primaryColumn="method"/>
     </constraint>
 
     <constraint id="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent">
@@ -80,8 +81,9 @@
               OR type:Spring:Configuration
             )
             RETURN
-              beanProducer as BeanProducer, injectable as Injectable
+              type as Type, beanProducer as BeanProducer, injectable as Injectable
         ]]></cypher>
+        <report primaryColumn="beanProducer"/>
     </constraint>
 
     <concept id="spring-injection:InjectionPoint">
@@ -116,6 +118,7 @@
             RETURN
               type as Type, field as Field
         ]]></cypher>
+        <report primaryColumn="field"/>
     </constraint>
 
     <constraint id="spring-injection:InjectablesShouldBeHeldInFinalFields">
@@ -219,8 +222,9 @@
               AND field.static
               AND NOT artifact:Test
             RETURN
-              type as Type, field.name as Field
+              type as Type, field as Field
         ]]></cypher>
+        <report primaryColumn="field"/>
     </constraint>
 
     <constraint id="spring-injection:InjectablesMustNotBeAccessedStatically">
@@ -229,15 +233,16 @@
         <description>Injectable components must not be accessed from static variables.</description>
         <cypher><![CDATA[
             MATCH
-              (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(field:Field)-[:OF_TYPE]->(fieldType:Type),
-              (method:Method)-[:WRITES|READS]->(field)
+              (artifact:Artifact)-[:CONTAINS]->(:Type)-[:DECLARES]->(field:Field)-[:OF_TYPE]->(fieldType:Type),
+              (type:Type)-[:DECLARES]->(method:Method)-[:WRITES|READS]->(field)
             WHERE
               (fieldType)-[:ASSIGNABLE_FROM*0..]->(:Injectable)
               AND field.static
               AND NOT artifact:Test
             RETURN
-              method as Method, field.name as Field
+              type as Type, method as Method, field as Field
         ]]></cypher>
+        <report primaryColumn="method"/>
     </constraint>
 
     <constraint id="spring-injection:JdkClassesMustNotBeInjectables">
@@ -249,7 +254,7 @@
             WHERE
               type.fqn STARTS WITH "java."
             RETURN
-              type.fqn AS Injectable
+              type AS Injectable
         ]]></cypher>
     </constraint>
 </jqa:jqassistant-rules>
