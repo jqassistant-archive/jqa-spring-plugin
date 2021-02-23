@@ -276,9 +276,7 @@
             WHERE
               NOT exists(t.abstract) OR injectableImplCnt = 0
             RETURN
-              t.fqn AS NonInjectableHavingInjectablesAsField, fields AS Fields
-            ORDER BY
-              NonInjectableHavingInjectablesAsField ASC
+              t AS NonInjectableHavingInjectablesAsField, fields AS Fields
         ]]></cypher>
     </constraint>
 </jqa:jqassistant-rules>

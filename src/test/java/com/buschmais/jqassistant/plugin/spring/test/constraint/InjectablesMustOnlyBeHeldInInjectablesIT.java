@@ -1,14 +1,21 @@
 package com.buschmais.jqassistant.plugin.spring.test.constraint;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.buschmais.jqassistant.core.report.api.model.Result;
 import com.buschmais.jqassistant.core.report.api.model.Result.Status;
 import com.buschmais.jqassistant.core.rule.api.model.Constraint;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
+
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Component;
 
+import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.HamcrestCondition.matching;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 /**
  * Integration tests for the constraint 'spring-injection:InjectablesMustOnlyBeHeldInInjectables'
@@ -32,12 +39,8 @@ public class InjectablesMustOnlyBeHeldInInjectablesIT extends AbstractJavaPlugin
         assertThat(result.getStatus()).isEqualTo(Status.FAILURE);
         assertThat(result.getRows()).hasSize(3);
 
-        assertThat(result.getRows().get(0).get("NonInjectableHavingInjectablesAsField"))
-            .isEqualTo("com.buschmais.jqassistant.plugin.spring.test.constraint.InjectablesMustOnlyBeHeldInInjectablesIT$InvalidAbstractComponent");
-        assertThat(result.getRows().get(1).get("NonInjectableHavingInjectablesAsField"))
-            .isEqualTo("com.buschmais.jqassistant.plugin.spring.test.constraint.InjectablesMustOnlyBeHeldInInjectablesIT$InvalidAbstractComponentImpl");
-        assertThat(result.getRows().get(2).get("NonInjectableHavingInjectablesAsField"))
-            .isEqualTo("com.buschmais.jqassistant.plugin.spring.test.constraint.InjectablesMustOnlyBeHeldInInjectablesIT$InvalidComponent");
+        List<Object> violatingTypes = result.getRows().stream().map(r -> r.get("NonInjectableHavingInjectablesAsField")).collect(Collectors.toList());
+        assertThat(violatingTypes).is(matching(containsInAnyOrder(typeDescriptor(InvalidAbstractComponent.class), typeDescriptor(InvalidAbstractComponentImpl.class), typeDescriptor(InvalidComponent.class))));
 
         store.rollbackTransaction();
     }
