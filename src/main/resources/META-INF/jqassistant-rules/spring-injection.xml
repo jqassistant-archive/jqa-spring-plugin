@@ -15,6 +15,7 @@
         <includeConstraint refId="spring-injection:FieldInjectionIsNotAllowed"/>
         <includeConstraint refId="spring-injection:InjectablesShouldBeHeldInFinalFields"/>
         <includeConstraint refId="spring-injection:JdkClassesMustNotBeInjectables"/>
+        <includeConstraint refId="spring-injection:InjectablesMustOnlyBeHeldInInjectables"/>
     </group>
 
     <concept id="spring-injection:Injectable">
@@ -255,6 +256,29 @@
               type.fqn STARTS WITH "java."
             RETURN
               type AS Injectable
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="spring-injection:InjectablesMustOnlyBeHeldInInjectables">
+        <requiresConcept refId="spring-injection:Injectable"/>
+        <description>Injectable classes must not be held as fields in non-injectable classes.</description>
+        <cypher><![CDATA[
+            MATCH
+              (t:Type)-[:DECLARES]->(f:Field)-[:OF_TYPE]->(fType:Type:Spring:Injectable)
+            WHERE
+              NOT t:Spring:Injectable
+            WITH
+              t, collect(DISTINCT fType.fqn) AS fields
+            OPTIONAL MATCH
+              (t)<-[:EXTENDS|IMPLEMENTS*]-(injectableImpl:Type:Spring:Injectable)
+            WITH
+              t, fields, count(DISTINCT injectableImpl) AS injectableImplCnt
+            WHERE
+              NOT exists(t.abstract) OR injectableImplCnt = 0
+            RETURN
+              t.fqn AS NonInjectableHavingInjectablesAsField, fields AS Fields
+            ORDER BY
+              NonInjectableHavingInjectablesAsField ASC
         ]]></cypher>
     </constraint>
 </jqa:jqassistant-rules>
