@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InjectablesMustOnlyBeHeldInInjectablesIT extends AbstractJavaPluginIT {
 
     @Test
-    public void reportsInjectableJdkClasses() throws Exception {
+    public void reportsInjectablesInNonInjectableClasses() throws Exception {
         scanClasses(
             Injectable.class,
             InvalidComponent.class, ValidComponent.class,
