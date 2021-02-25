@@ -4,13 +4,13 @@
     <parent>
         <groupId>com.buschmais.jqassistant.plugin</groupId>
         <artifactId>parent</artifactId>
-        <version>1.9.1</version>
+        <version>1.10.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>com.buschmais.jqassistant.plugin</groupId>
     <artifactId>spring</artifactId>
-    <version>1.9.1</version>
+    <version>1.10.0-SNAPSHOT</version>
 
     <name>jQAssistant Spring Framework Plugin</name>
     <url>http://jqassistant.org/</url>
@@ -59,8 +59,8 @@
     </repositories>
 
     <properties>
-        <jqa-java-plugin.version>1.9.1</jqa-java-plugin.version>
-        <jqa-plugin-common.version>1.9.1</jqa-plugin-common.version>
+        <jqa-java-plugin.version>1.10.0-SNAPSHOT</jqa-java-plugin.version>
+        <jqa-plugin-common.version>1.10.0-SNAPSHOT</jqa-plugin-common.version>
         <org.springframework.version>5.3.2</org.springframework.version>
         <org.springframework.boot_version>2.4.1</org.springframework.boot_version>
         <org.springframework.data_version>2.4.2</org.springframework.data_version>
