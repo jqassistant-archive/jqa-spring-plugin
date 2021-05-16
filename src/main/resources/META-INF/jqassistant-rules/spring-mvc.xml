@@ -2,7 +2,7 @@
 
     <concept id="spring-mvc:RestController">
         <description>Labels all types annotated with "@org.springframework.web.bind.annotation.RestController" with "Spring",
-            "RestController", "Controller" and "Injectable".
+            "RestController", "Controller" and "Component".
         </description>
         <cypher><![CDATA[
             MATCH
@@ -10,7 +10,7 @@
             WHERE
               annotationType.fqn = "org.springframework.web.bind.annotation.RestController"
             SET
-              restController:Spring:RestController:Controller:Injectable
+              restController:Spring:RestController:Controller:Component
             RETURN
               restController as RestController
         ]]></cypher>

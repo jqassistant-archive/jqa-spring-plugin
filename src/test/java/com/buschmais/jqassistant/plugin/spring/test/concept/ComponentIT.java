@@ -6,8 +6,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.components.AnnotatedRepo
 import com.buschmais.jqassistant.plugin.spring.test.set.components.Controller;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRepository;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.Service;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepository1;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestService1;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.*;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
 
 import org.junit.jupiter.api.Test;
@@ -69,13 +68,14 @@ public class ComponentIT extends AbstractSpringIT {
 
     @Test
     public void directComponentDependencies() throws Exception {
-        scanClasses(com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestController1.class, TestService1.class,
-                TestRepository1.class);
+        scanClasses(TestController1.class, TestService1.class, TestService2.class, TestRepository1.class, TestRepository2.class, TestComponent.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));
         assertThat(applyConcept("spring-component:Repository").getStatus(), equalTo(SUCCESS));
-        verifyComponentDependencies("MATCH (:Spring:Controller)-[:DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestService1.class);
-        verifyComponentDependencies("MATCH (:Spring:Service)-[:DEPENDS_ON]->(c:Spring:Injectable) RETURN c", TestRepository1.class);
+        assertThat(applyConcept("spring-component:Component").getStatus(), equalTo(SUCCESS));
+        verifyComponentDependencies("MATCH (:Spring:Controller{name:'TestController1'})-[:DEPENDS_ON]->(c:Spring:Component) RETURN c", TestService1.class, TestRepository1.class, TestComponent.class);
+        verifyComponentDependencies("MATCH (:Spring:Service{name:'TestService1'})-[:DEPENDS_ON]->(c:Spring:Component) RETURN c", TestService2.class, TestRepository1.class, TestComponent.class);
+        verifyComponentDependencies("MATCH (:Spring:Repository{name:'TestRepository1'})-[:DEPENDS_ON]->(c:Spring:Component) RETURN c", TestRepository2.class, TestComponent.class);
     }
 
     private void verifyComponentDependencies(String query, Class<?>... dependencies) {

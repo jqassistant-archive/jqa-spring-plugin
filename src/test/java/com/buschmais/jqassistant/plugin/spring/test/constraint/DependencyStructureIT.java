@@ -8,16 +8,7 @@ import com.buschmais.jqassistant.core.report.api.model.Result;
 import com.buschmais.jqassistant.core.rule.api.model.Constraint;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestController1;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestControllerWithControllerDependency;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestControllerWithRepositoryDependency;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestControllerWithServiceAndRepositoryDependency;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepository1;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepository2;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepositoryWithControllerDependency;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestRepositoryWithServiceDependency;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestService1;
-import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.TestService2;
+import com.buschmais.jqassistant.plugin.spring.test.set.components.dependencies.direct.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,56 +28,46 @@ public class DependencyStructureIT extends AbstractJavaPluginIT {
     private static final String CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES = "spring-component:RepositoryMustOnlyDependOnRepositories";
 
     @Test
-    public void controllerDependsOnService() throws Exception {
-        scanClasses(TestController1.class, TestService1.class);
+    public void validControllerDependencies() throws Exception {
+        scanClasses(TestController1.class, TestService1.class, TestRepository1.class, TestConfiguration.class, TestComponent.class);
         assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void controllerDependsRepository() throws Exception {
-        scanClasses(TestControllerWithRepositoryDependency.class, TestRepository1.class);
-        assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
+    public void invalidControllerDependencies() throws Exception {
+        scanClasses(TestControllerWithInvalidDependencies.class, TestController1.class, TestConfiguration.class);
+        verifyConstraintViolation(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES, "Controller", TestControllerWithInvalidDependencies.class, TestController1.class,
+                TestConfiguration.class);
     }
 
     @Test
-    public void controllerDependsOnController() throws Exception {
-        scanClasses(TestControllerWithControllerDependency.class, TestController1.class);
-        verifyConstraintViolation(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES, "Controller", TestControllerWithControllerDependency.class,
-                TestController1.class);
-    }
-
-    @Test
-    public void controllerDependsOnServiceAndRepository() throws Exception {
-        scanClasses(TestControllerWithServiceAndRepositoryDependency.class, TestService1.class, TestRepository1.class);
-        assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
-    }
-
-    @Test
-    public void serviceDependsOnServiceAndRepository() throws Exception {
-        scanClasses(TestController1.class, TestService1.class, TestService2.class, TestRepository1.class);
+    public void validServiceDependencies() throws Exception {
+        scanClasses(TestController1.class, TestService1.class, TestService2.class, TestRepository1.class, TestConfiguration.class, TestComponent.class);
         assertThat(validateConstraint(CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void repositoryDependsOnRepository() throws Exception {
-        scanClasses(TestRepository1.class, TestRepository2.class);
+    public void invalidServiceDependencies() throws Exception {
+        scanClasses(TestServiceWithInvalidDependencies.class, TestRepository1.class, TestService1.class, TestController1.class, TestConfiguration.class);
+        verifyConstraintViolation(CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES, "Service", TestServiceWithInvalidDependencies.class, TestController1.class,
+                TestConfiguration.class);
+    }
+
+    @Test
+    public void validRepositoryDependencies() throws Exception {
+        scanClasses(TestRepository1.class, TestRepository2.class, TestConfiguration.class, TestComponent.class);
         assertThat(validateConstraint(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void repositoryDependsOnController() throws Exception {
-        scanClasses(TestRepositoryWithControllerDependency.class, TestController1.class);
-        verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithControllerDependency.class,
-                TestController1.class);
+    public void invalidRepositoryDependencies() throws Exception {
+        scanClasses(TestRepositoryWithInvalidDependencies.class, TestRepository1.class, TestService1.class, TestController1.class, TestConfiguration.class);
+        verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithInvalidDependencies.class, TestService1.class,
+                TestController1.class, TestConfiguration.class);
     }
 
-    @Test
-    public void repositoryDependsOnService() throws Exception {
-        scanClasses(TestRepositoryWithServiceDependency.class, TestService1.class);
-        verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithServiceDependency.class, TestService1.class);
-    }
-
-    private void verifyConstraintViolation(String constraintId, String componentColumn, Class<?> component, Class<?>... dependencies) throws Exception {
+    private void verifyConstraintViolation(String constraintId, String componentColumn, Class<?> component, Class<?>... expectedInvalidDependencies)
+            throws Exception {
         assertThat(validateConstraint(constraintId).getStatus(), equalTo(FAILURE));
         store.beginTransaction();
         List<Result<Constraint>> constraintViolations = new ArrayList<>(reportPlugin.getConstraintResults().values());
@@ -99,8 +80,8 @@ public class DependencyStructureIT extends AbstractJavaPluginIT {
         TypeDescriptor repository = (TypeDescriptor) row.get(componentColumn);
         assertThat(repository, typeDescriptor(component));
         List<TypeDescriptor> invalidDependencies = (List<TypeDescriptor>) row.get("InvalidDependencies");
-        assertThat(invalidDependencies.size(), equalTo(dependencies.length));
-        for (Class<?> dependency : dependencies) {
+        assertThat(invalidDependencies.size(), equalTo(expectedInvalidDependencies.length));
+        for (Class<?> dependency : expectedInvalidDependencies) {
             assertThat(invalidDependencies, hasItem(typeDescriptor(dependency)));
         }
         store.commitTransaction();

@@ -8,8 +8,11 @@ public class TestRepository1 {
 
     private TestRepository2 testRepository2;
 
+    private TestComponent testComponent;
+
     @Autowired
-    public TestRepository1(TestRepository2 testRepository2) {
+    public TestRepository1(TestRepository2 testRepository2, TestComponent testComponent) {
         this.testRepository2 = testRepository2;
+        this.testComponent = testComponent;
     }
 }

@@ -19,7 +19,7 @@
     </group>
 
     <concept id="spring-injection:Injectable">
-        <requiresConcept refId="spring-component:AnnotatedInjectables"/>
+        <requiresConcept refId="spring-component:InjectableComponent"/>
         <requiresConcept refId="spring-injection:BeanProducer"/>
         <description>Returns all injectables.</description>
         <cypher><![CDATA[

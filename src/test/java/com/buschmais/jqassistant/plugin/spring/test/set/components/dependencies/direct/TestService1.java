@@ -10,9 +10,12 @@ public class TestService1 {
 
     private TestService2 testService2;
 
+    private TestComponent testComponent;
+
     @Autowired
-    public TestService1(TestRepository1 testRepository1, TestService2 testService2) {
+    public TestService1(TestRepository1 testRepository1, TestService2 testService2, TestComponent testComponent) {
         this.testRepository1 = testRepository1;
         this.testService2 = testService2;
+        this.testComponent = testComponent;
     }
 }
