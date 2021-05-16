@@ -2,4 +2,5 @@ ifndef::jqa-in-manual[== Version 1.10.0]
 ifdef::jqa-in-manual[== Spring Plugin 1.10.0]
 
 - Allow dependencies from any Spring component to `@Component` annotated beans
-- Defined primary colums for constraint results for better matching in SonarQube
+- Defined primary columns for constraint results for better matching in SonarQube
+- Excluded classes in test artifacts from constraint `spring-injection:InjectablesMustOnlyBeHeldInInjectables`

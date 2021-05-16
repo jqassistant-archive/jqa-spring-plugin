@@ -264,9 +264,11 @@
         <description>Injectable classes must not be held as fields in non-injectable classes.</description>
         <cypher><![CDATA[
             MATCH
-              (t:Type)-[:DECLARES]->(f:Field)-[:OF_TYPE]->(fType:Type:Spring:Injectable)
-            WHERE
-              NOT t:Spring:Injectable
+              (artifact:Artifact)-[:CONTAINS]->(t:Type)-[:DECLARES]->(f:Field)-[:OF_TYPE]->(fType:Type:Spring:Injectable)
+            WHERE NOT (
+              artifact:Test
+              or t:Spring:Injectable
+            )
             WITH
               t, collect(DISTINCT fType.fqn) AS fields
             OPTIONAL MATCH
