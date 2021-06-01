@@ -2,7 +2,8 @@
 
     <group id="spring-injection:Default">
         <includeConstraint refId="spring-injection:InjectablesMustNotBeInstantiated"/>
-        <includeConstraint refId="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent" />
+        <includeConstraint refId="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent"/>
+        <includeConstraint refId="spring-injection:BeanProducerMustNotBeInvokedDirectly"/>
         <includeConstraint refId="spring-injection:FieldsOfInjectablesMustNotBeManipulated"/>
         <includeConstraint refId="spring-injection:AvoidInitializingBean"/>
         <includeConstraint refId="spring-injection:AvoidDisposableBean"/>
@@ -85,6 +86,23 @@
               type as Type, beanProducer as BeanProducer, injectable as Injectable
         ]]></cypher>
         <report primaryColumn="beanProducer"/>
+    </constraint>
+
+    <constraint id="spring-injection:BeanProducerMustNotBeInvokedDirectly">
+        <requiresConcept refId="spring-injection:BeanProducer"/>
+        <description>Bean producer methods must not be invoked directly by the application.</description>
+        <cypher><![CDATA[
+            MATCH
+              (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(method:Method),
+              (beanType:Type)-[:DECLARES]->(beanProducer:BeanProducer),
+              (method)-[invokes:INVOKES]->(beanProducer)
+            WHERE NOT (
+              artifact:Test
+            )
+            RETURN
+              type as Type, method as Method, beanType as BeanProducerType, beanProducer as BeanProducer, invokes.lineNumber as LineNumber
+        ]]></cypher>
+        <report primaryColumn="method"/>
     </constraint>
 
     <concept id="spring-injection:InjectionPoint">
