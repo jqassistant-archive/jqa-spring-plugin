@@ -157,7 +157,7 @@
             WHERE NOT (
               artifact:Test
               or repository:Generated
-              or repository:Generated
+              or other:Generated
               or ((other:Repository or other:Component) and not (other:Controller or other:Service or other:Configuration))
             )
             RETURN
