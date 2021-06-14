@@ -1,6 +1,9 @@
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
+<jqassistant-rules>
 
     <concept id="spring-data:AnnotatedRepository">
+        <providesConcept refId="spring-component:Repository"/>
+        <providesConcept refId="spring-component:Component"/>
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Labels all types annotated with "@org.springframework.stereotype.Repository" with "Spring",
             "Repository" and "Component".
         </description>
@@ -10,13 +13,16 @@
             WHERE
               annotationType.fqn = "org.springframework.stereotype.Repository"
             SET
-              repository:Spring:Repository:Component
+              repository:Spring:Repository:Component:Injectable
             RETURN
               repository as Repository
         ]]></cypher>
     </concept>
 
     <concept id="spring-data:ImplementedRepository">
+        <providesConcept refId="spring-component:Repository"/>
+        <providesConcept refId="spring-component:Component"/>
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Labels all types implementing "org.springframework.data.repository.Repository" with "Spring",
             "Repository" and "Component".
         </description>
@@ -33,10 +39,10 @@
                 "org.springframework.data.jpa.repository.support.QueryDslJpaRepository"
               ]
             SET
-              repository:Spring:Repository:Component
+              repository:Spring:Repository:Component:Injectable
             RETURN
               repository as Repository
         ]]></cypher>
     </concept>
 
-</jqa:jqassistant-rules>
+</jqassistant-rules>

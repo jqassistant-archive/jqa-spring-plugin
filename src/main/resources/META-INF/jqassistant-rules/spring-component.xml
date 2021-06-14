@@ -1,4 +1,4 @@
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
+<jqassistant-rules>
 
     <group id="spring-component:Default">
         <includeConstraint refId="spring-component:ControllerMustOnlyDependOnServicesRepositories"/>
@@ -11,11 +11,8 @@
     </group>
 
     <concept id="spring-component:Component">
-        <requiresConcept refId="spring-component:Controller"/>
-        <requiresConcept refId="spring-component:Service"/>
-        <requiresConcept refId="spring-component:Repository"/>
-        <requiresConcept refId="spring-component:Configuration"/>
-        <description>Labels all types annotated with "@org.springframework.stereotype.Component" with "Spring" and "Component".
+        <providesConcept refId="spring-injection:Injectable"/>
+        <description>Labels all types annotated with "@org.springframework.stereotype.Component" with "Spring", "Component" and "Injectable".
         </description>
         <cypher><![CDATA[
             MATCH
@@ -26,16 +23,17 @@
                 "org.springframework.web.bind.annotation.ControllerAdvice"
               ]
             SET
-              component:Spring:Component
+              component:Spring:Component:Injectable
             RETURN
               component as Component
         ]]></cypher>
     </concept>
 
     <concept id="spring-component:Controller">
-        <requiresConcept refId="spring-*:*Controller" />
+        <providesConcept refId="spring-component:Component" />
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Labels all types annotated with "@org.springframework.stereotype.Controller" with "Spring",
-            "Controller" and "Component".
+            "Controller", "Component" and "Injectable".
         </description>
         <cypher><![CDATA[
             MATCH
@@ -45,15 +43,17 @@
                 "org.springframework.stereotype.Controller"
               ]
             SET
-              controller:Spring:Controller:Component
+              controller:Spring:Controller:Component:Injectable
             RETURN
               controller as Controller
         ]]></cypher>
     </concept>
 
     <concept id="spring-component:Service">
+        <providesConcept refId="spring-component:Component" />
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Labels all types annotated with "@org.springframework.stereotype.Service" with "Spring", "Service"
-            and "Component".
+            "Component" and "Injectable".
         </description>
         <cypher><![CDATA[
             MATCH
@@ -63,26 +63,29 @@
                 "org.springframework.stereotype.Service"
               ]
             SET
-              service:Spring:Service:Component
+              service:Spring:Service:Component:Injectable
             RETURN
               service as Service
         ]]></cypher>
     </concept>
 
     <concept id="spring-component:Repository">
-        <requiresConcept refId="spring-*:*Repository"/>
+        <providesConcept refId="spring-component:Component" />
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Returns all repositories.</description>
         <cypher><![CDATA[
             MATCH
-              (repository:Spring:Repository:Component)
+              (repository:Spring:Repository:Component:Injectable)
             RETURN
               repository as Repository
         ]]></cypher>
     </concept>
 
     <concept id="spring-component:Configuration">
+        <providesConcept refId="spring-component:Component" />
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Labels all types annotated with "@org.springframework.context.annotation.Configuration" with
-            "Spring", "Configuration" and "Component".
+            "Spring", "Configuration", "Component" and "Injectable".
         </description>
         <cypher><![CDATA[
             MATCH
@@ -94,28 +97,15 @@
                 "org.springframework.data.web.config.SpringDataWebConfigurationMixin"
               ]
             SET
-              configuration:Spring:Configuration:Component
+              configuration:Spring:Configuration:Component:Injectable
             RETURN
               configuration as Configuration
         ]]></cypher>
     </concept>
 
-    <concept id="spring-component:InjectableComponent">
-    	<requiresConcept refId="spring-component:Component"/>
-        <description>Labels all Spring Components as "Injectable".</description>
-        <cypher><![CDATA[
-            MATCH
-              (injectableComponent:Spring:Component)
-            SET
-              injectableComponent:Injectable
-            RETURN
-              injectableComponent as InjectableComponent
-        ]]></cypher>
-    </concept>
-
     <constraint id="spring-component:ControllerMustOnlyDependOnServicesRepositories">
         <requiresConcept refId="java:VirtualDependsOn"/>
-        <requiresConcept refId="spring-component:InjectableComponent"/>
+        <requiresConcept refId="spring-component:Component"/>
         <description>A Spring controller can only have dependencies to other Spring components that are services or
             repositories.
         </description>
@@ -133,7 +123,7 @@
 
     <constraint id="spring-component:ServiceMustOnlyDependOnServicesRepositories">
         <requiresConcept refId="java:VirtualDependsOn"/>
-        <requiresConcept refId="spring-component:InjectableComponent"/>
+        <requiresConcept refId="spring-component:Component"/>
         <description><![CDATA[
             A Spring service can only have dependencies to other Spring components that are services or repositories.
         ]]></description>
@@ -149,10 +139,9 @@
         ]]></cypher>
     </constraint>
 
-
     <constraint id="spring-component:RepositoryMustOnlyDependOnRepositories">
         <requiresConcept refId="java:VirtualDependsOn"/>
-        <requiresConcept refId="spring-component:InjectableComponent"/>
+        <requiresConcept refId="spring-component:Component"/>
         <description>A Spring repository can only have dependencies to other Spring components that are repositories.
         </description>
         <cypher><![CDATA[
@@ -167,4 +156,4 @@
         ]]></cypher>
     </constraint>
 
-</jqa:jqassistant-rules>
+</jqassistant-rules>

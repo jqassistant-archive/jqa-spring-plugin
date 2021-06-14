@@ -1,4 +1,4 @@
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
+<jqassistant-rules>
 
     <group id="spring-boot:Default">
         <includeConstraint refId="spring-boot:AllTypesInApplicationPackage"/>
@@ -14,6 +14,9 @@
     </group>
 
     <concept id="spring-boot:Application">
+        <providesConcept refId="spring-component:Component"/>
+        <providesConcept refId="spring-component:Configuration"/>
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Labels all Spring Boot Applications with "Spring", "Application", "Configuration" and "Component".</description>
         <cypher><![CDATA[
             MATCH
@@ -21,7 +24,7 @@
             WHERE
               annotationType.fqn = "org.springframework.boot.autoconfigure.SpringBootApplication"
             SET
-              application:Spring:Boot:Application:Configuration:Component
+              application:Spring:Boot:Application:Configuration:Component:Injectable
             RETURN
               application as Application
         ]]></cypher>
@@ -44,4 +47,4 @@
         ]]></cypher>
     </constraint>
 
-</jqa:jqassistant-rules>
+</jqassistant-rules>

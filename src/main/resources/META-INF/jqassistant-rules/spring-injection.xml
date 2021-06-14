@@ -1,4 +1,4 @@
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
+<jqassistant-rules>
 
     <group id="spring-injection:Default">
         <includeConstraint refId="spring-injection:InjectablesMustNotBeInstantiated"/>
@@ -20,8 +20,6 @@
     </group>
 
     <concept id="spring-injection:Injectable">
-        <requiresConcept refId="spring-component:InjectableComponent"/>
-        <requiresConcept refId="spring-injection:BeanProducer"/>
         <description>Returns all injectables.</description>
         <cypher><![CDATA[
             MATCH
@@ -32,6 +30,7 @@
     </concept>
 
     <concept id="spring-injection:BeanProducer">
+        <providesConcept refId="spring-injection:Injectable"/>
         <description>Labels methods which are annotated with "@org.springframework.context.annotation.Bean" with
             "BeanProducer" and their return types with "Spring" and "Injectable".
         </description>
@@ -94,7 +93,7 @@
         <cypher><![CDATA[
             MATCH
               (artifact:Artifact)-[:CONTAINS]->(type:Type)-[:DECLARES]->(method:Method),
-              (beanType:Type)-[:DECLARES]->(beanProducer:BeanProducer),
+              (beanType:Type)-[:DECLARES]->(beanProducer:Spring:BeanProducer),
               (method)-[invokes:INVOKES]->(beanProducer)
             WHERE NOT (
               artifact:Test
@@ -299,4 +298,4 @@
               t AS NonInjectableHavingInjectablesAsField, fields AS Fields
         ]]></cypher>
     </constraint>
-</jqa:jqassistant-rules>
+</jqassistant-rules>

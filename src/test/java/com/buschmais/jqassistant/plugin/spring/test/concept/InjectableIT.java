@@ -3,6 +3,7 @@ package com.buschmais.jqassistant.plugin.spring.test.concept;
 import java.util.List;
 
 import com.buschmais.jqassistant.plugin.java.api.model.ConstructorDescriptor;
+import com.buschmais.jqassistant.plugin.spring.test.set.application.valid.Application;
 import com.buschmais.jqassistant.plugin.spring.test.set.components.*;
 import com.buschmais.jqassistant.plugin.spring.test.set.fieldinjection.ServiceWithConstructorInjection;
 import com.buschmais.jqassistant.plugin.spring.test.set.fieldinjection.ServiceWithFieldInjection;
@@ -53,12 +54,13 @@ public class InjectableIT extends AbstractSpringIT {
 
     @Test
     public void injectable() throws Exception {
-        scanClasses(ConfigurationWithBeanProducer.class, AnnotatedRepository.class, ImplementedRepository.class, Controller.class, RestController.class,
-                Service.class);
+        scanClasses(Application.class, ConfigurationWithBeanProducer.class, AnnotatedRepository.class, ImplementedRepository.class, Controller.class,
+                RestController.class, Service.class);
         assertThat(applyConcept("spring-injection:Injectable").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
         List<Object> injectables = query("MATCH (i:Type:Spring:Injectable) RETURN i").getColumn("i");
-        assertThat(injectables.size(), equalTo(7));
+        assertThat(injectables.size(), equalTo(8));
+        assertThat(injectables, hasItem(typeDescriptor(Application.class)));
         assertThat(injectables, hasItem(typeDescriptor(ConfigurationBean.class)));
         assertThat(injectables, hasItem(typeDescriptor(ConfigurationWithBeanProducer.class)));
         assertThat(injectables, hasItem(typeDescriptor(AnnotatedRepository.class)));
