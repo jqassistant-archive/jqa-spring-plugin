@@ -32,6 +32,7 @@
 
     <constraint id="spring-boot:AllTypesInApplicationPackage">
         <requiresConcept refId="spring-boot:Application"/>
+        <requiresConcept refId="java:GeneratedType"/>
         <description>All types of of a Spring Boot application must be located in the same package or a sub-package of
             the application class.
         </description>
@@ -40,8 +41,11 @@
               (artifact:Artifact),
               (artifact)-[:CONTAINS]->(applicationPackage:Package)-[:CONTAINS]->(application:Spring:Boot:Application),
               (artifact)-[:CONTAINS]->(package:Package)-[:CONTAINS]->(type:Type)
-            WHERE NOT
-              (artifact:Test OR (applicationPackage)-[:CONTAINS*0..]->(package))
+            WHERE NOT (
+                artifact:Test
+                OR type:Generated
+                OR (applicationPackage)-[:CONTAINS*0..]->(package)
+              )
             RETURN
               type as TypeOutsideApplicationPackage, application as Application, applicationPackage as ApplicationPackage
         ]]></cypher>

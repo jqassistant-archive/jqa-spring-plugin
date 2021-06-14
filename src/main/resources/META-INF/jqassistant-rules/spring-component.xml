@@ -106,6 +106,7 @@
     <constraint id="spring-component:ControllerMustOnlyDependOnServicesRepositories">
         <requiresConcept refId="java:VirtualDependsOn"/>
         <requiresConcept refId="spring-component:Component"/>
+        <requiresConcept refId="java:GeneratedType"/>
         <description>A Spring controller can only have dependencies to other Spring components that are services or
             repositories.
         </description>
@@ -113,8 +114,10 @@
             MATCH
               (artifact:Artifact)-[:CONTAINS]->(controller:Spring:Controller)-[:DEPENDS_ON|VIRTUAL_DEPENDS_ON]->(other:Spring:Component)
             WHERE NOT (
-               artifact:Test
-               or ((other:Service or other:Repository or other:Component) and not (other:Controller or other:Configuration))
+              artifact:Test
+              or controller:Generated
+              or other:Generated
+              or ((other:Service or other:Repository or other:Component) and not (other:Controller or other:Configuration))
             )
             RETURN
               controller as Controller, collect(other) as InvalidDependencies
@@ -124,6 +127,7 @@
     <constraint id="spring-component:ServiceMustOnlyDependOnServicesRepositories">
         <requiresConcept refId="java:VirtualDependsOn"/>
         <requiresConcept refId="spring-component:Component"/>
+        <requiresConcept refId="java:GeneratedType"/>
         <description><![CDATA[
             A Spring service can only have dependencies to other Spring components that are services or repositories.
         ]]></description>
@@ -132,6 +136,8 @@
               (artifact:Artifact)-[:CONTAINS]->(service:Spring:Service)-[:DEPENDS_ON|VIRTUAL_DEPENDS_ON]->(other:Spring:Component)
             WHERE NOT (
               artifact:Test
+              or service:Generated
+              or other:Generated
               or ((other:Service or other:Repository or other:Component) and not (other:Controller or other:Configuration))
             )
             RETURN
@@ -142,6 +148,7 @@
     <constraint id="spring-component:RepositoryMustOnlyDependOnRepositories">
         <requiresConcept refId="java:VirtualDependsOn"/>
         <requiresConcept refId="spring-component:Component"/>
+        <requiresConcept refId="java:GeneratedType"/>
         <description>A Spring repository can only have dependencies to other Spring components that are repositories.
         </description>
         <cypher><![CDATA[
@@ -149,6 +156,8 @@
               (artifact:Artifact)-[:CONTAINS]->(repository:Spring:Repository)-[:DEPENDS_ON|VIRTUAL_DEPENDS_ON]->(other:Spring:Component)
             WHERE NOT (
               artifact:Test
+              or repository:Generated
+              or repository:Generated
               or ((other:Repository or other:Component) and not (other:Controller or other:Service or other:Configuration))
             )
             RETURN

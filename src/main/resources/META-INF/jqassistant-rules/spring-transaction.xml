@@ -6,6 +6,7 @@
 
     <constraint id="spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass">
         <requiresConcept refId="spring-transaction:TransactionalMethod"/>
+        <requiresConcept refId="java:GeneratedType"/>
         <description>Transactional methods must not be invoked from the same class.</description>
         <cypher><![CDATA[
             MATCH
@@ -14,6 +15,7 @@
               (callingMethod:Method)-[invokes:INVOKES]->(calledMethod)
             WHERE NOT (
               artifact:Test
+              OR type:Generated
               OR callingMethod:Method:Spring:Transactional
               OR type:Spring:Transactional
             )
