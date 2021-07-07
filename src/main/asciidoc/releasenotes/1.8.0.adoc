@@ -1,8 +1,0 @@
-ifndef::jqa-in-manual[== Version 1.8.0]
-ifdef::jqa-in-manual[== Spring Plugin 1.8.0]
-
-* Added meta-annotated Spring annotations to concepts, e.g. `@SpringBootApplication` will be also labeled with `Configuration
-* Relaxed the constraint `spring-injection:InjectablesMustNotBeInstantiated` such that instantiation is allowed from either bean producer methods declared by injectables or non-injectables (https://github.com/jQAssistant/jqa-spring-plugin/issues/25[issue])
-* Relaxed the constraint `spring-injection:FieldsOfInjectablesMustNotBeManipulated` such that only fields of injectable types are checked for being written by non-constructor methods (https://github.com/jQAssistant/jqa-spring-plugin/issues/19[issue])
-* The constraints `spring-injection:FieldsOfInjectablesMustNotBeManipulated`, `spring-injection:InjectablesMustNotBeHeldInStaticVariables` and `spring-injection:InjectablesMustNotBeAccessedStatically` are improved such that also fields are considered where injectable types are injected by interfaces or super classes.
-

@@ -1,6 +1,0 @@
-ifndef::jqa-in-manual[== Version 1.7.0]
-ifdef::jqa-in-manual[== Spring Plugin 1.7.0]
-
-* Renamed relation representing virtual dependencies between components
-  from DEPENDS_ON to VIRTUAL_DEPENDS_ON (https://github.com/buschmais/jqa-spring-plugin/issues/26[issue])
-

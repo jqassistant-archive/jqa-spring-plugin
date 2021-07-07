@@ -1,9 +1,0 @@
-ifndef::jqa-in-manual[== Version 1.10.0]
-ifdef::jqa-in-manual[== Spring Plugin 1.10.0]
-
-- Added constraint `spring-injection:BeanProducerMustNotBeInvokedDirectly`
-- Allow dependencies from any Spring component to `@Component` annotated beans
-- Defined primary columns for constraint results for better matching in SonarQube
-- Excluded generated Java types from Spring constraints, therefore the projects needs to extend the concept `java:GeneratedType`
-- Excluded classes in test artifacts from constraint `spring-injection:InjectablesMustOnlyBeHeldInInjectables`
-
