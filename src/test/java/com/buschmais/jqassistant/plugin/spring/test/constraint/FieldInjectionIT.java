@@ -26,22 +26,22 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class FieldInjectionIT extends AbstractJavaPluginIT {
+class FieldInjectionIT extends AbstractJavaPluginIT {
 
     @Test
-    public void serviceWithFieldInjection() throws Exception {
+    void serviceWithFieldInjection() throws Exception {
         scanClasses(ServiceWithFieldInjection.class);
         verifyConstraintResult(ServiceWithFieldInjection.class, "repository");
     }
 
     @Test
-    public void serviceWithConstructorInjection() throws Exception {
+    void serviceWithConstructorInjection() throws Exception {
         scanClasses(ServiceWithConstructorInjection.class);
         assertThat(validateConstraint("spring-injection:FieldInjectionIsNotAllowed").getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void rejectsNonFinalInjectableField() throws Exception {
+    void rejectsNonFinalInjectableField() throws Exception {
         scanClasses(ServiceWithConstructorInjection.class, Repository.class);
 
         Result<Constraint> constraint = validateConstraint("spring-injection:InjectablesShouldBeHeldInFinalFields");
@@ -65,8 +65,7 @@ public class FieldInjectionIT extends AbstractJavaPluginIT {
     }
 
     @Test
-    public void doesNotRejectFinalInjectableField() throws Exception {
-
+    void doesNotRejectFinalInjectableField() throws Exception {
         scanClasses(SomeComponent.class);
 
         assertThat(validateConstraint("spring-injection:InjectablesShouldBeHeldInFinalFields").getStatus(), is(SUCCESS));

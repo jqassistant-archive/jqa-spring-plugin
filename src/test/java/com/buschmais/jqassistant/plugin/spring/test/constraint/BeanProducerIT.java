@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 
-public class BeanProducerIT extends AbstractJavaPluginIT {
+class BeanProducerIT extends AbstractJavaPluginIT {
 
     @Test
     public void beanProducerInConfigurationComponent() throws Exception {
@@ -32,7 +32,7 @@ public class BeanProducerIT extends AbstractJavaPluginIT {
     }
 
     @Test
-    public void beanProducerInServiceComponent() throws Exception {
+    void beanProducerInServiceComponent() throws Exception {
         scanClasses(ServiceWithBeanProducer.class);
         Result<Constraint> result = validateConstraint("spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent");
         store.beginTransaction();
@@ -46,7 +46,7 @@ public class BeanProducerIT extends AbstractJavaPluginIT {
     }
 
     @Test
-    public void beanProducerMustNotBeInvokedDirectly() throws Exception {
+    void beanProducerMustNotBeInvokedDirectly() throws Exception {
         scanClasses(ConfigurationWithBeanProducer.class, ServiceInvokingBeanProducer.class);
         Result<Constraint> result = validateConstraint("spring-injection:BeanProducerMustNotBeInvokedDirectly");
         store.beginTransaction();

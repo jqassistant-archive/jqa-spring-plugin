@@ -12,10 +12,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class MvcIT extends AbstractSpringIT {
+class MvcIT extends AbstractSpringIT {
 
     @Test
-    public void restController() throws Exception {
+    void restController() throws Exception {
         scanClasses(Service.class);
         assertThat(applyConcept("spring-mvc:RestController").getStatus(), equalTo(FAILURE));
         clearConcepts();

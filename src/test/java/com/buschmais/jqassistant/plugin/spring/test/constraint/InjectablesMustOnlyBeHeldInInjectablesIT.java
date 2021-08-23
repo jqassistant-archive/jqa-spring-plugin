@@ -22,10 +22,10 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
  *
  * @author Stephan Pirnbaum
  */
-public class InjectablesMustOnlyBeHeldInInjectablesIT extends AbstractJavaPluginIT {
+class InjectablesMustOnlyBeHeldInInjectablesIT extends AbstractJavaPluginIT {
 
     @Test
-    public void reportsInjectablesInNonInjectableClasses() throws Exception {
+    void reportsInjectablesInNonInjectableClasses() throws Exception {
         scanClasses(
             Injectable.class,
             InvalidComponent.class, ValidComponent.class,

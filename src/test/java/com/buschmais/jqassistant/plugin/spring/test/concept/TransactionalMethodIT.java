@@ -15,10 +15,10 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
-public class TransactionalMethodIT extends AbstractSpringIT {
+class TransactionalMethodIT extends AbstractSpringIT {
 
     @Test
-    public void transactionalMethod() throws Exception {
+    void transactionalMethod() throws Exception {
         scanClasses(TransactionalMethod.class);
         assertThat(applyConcept("spring-transaction:TransactionalMethod").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
@@ -30,7 +30,7 @@ public class TransactionalMethodIT extends AbstractSpringIT {
     }
 
     @Test
-    public void transactionalClass() throws Exception {
+    void transactionalClass() throws Exception {
         scanClasses(TransactionalClass.class, TransactionalSubClass.class);
         assertThat(applyConcept("spring-transaction:TransactionalClass").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();

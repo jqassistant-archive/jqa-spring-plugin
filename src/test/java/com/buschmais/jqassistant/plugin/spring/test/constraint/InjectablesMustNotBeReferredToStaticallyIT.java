@@ -25,10 +25,10 @@ import static org.hamcrest.Matchers.is;
  *
  * @author Oliver Gierke
  */
-public class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPluginIT {
+class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPluginIT {
 
     @Test
-    public void reportsInjectablesInStaticFields() throws Exception {
+    void reportsInjectablesInStaticFields() throws Exception {
 
         scanClasses(MyComponent.class, MyDependency.class, MyDependencyImpl.class);
 
@@ -48,7 +48,7 @@ public class InjectablesMustNotBeReferredToStaticallyIT extends AbstractJavaPlug
     }
 
     @Test
-    public void reportsStaticReferenceToInjectable() throws Exception {
+    void reportsStaticReferenceToInjectable() throws Exception {
 
         scanClasses(MyComponent.class, MyDependency.class, MyDependencyImpl.class);
 

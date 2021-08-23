@@ -20,10 +20,10 @@ import static org.assertj.core.api.HamcrestCondition.matching;
  *
  * @author Stephan Pirnbaum
  */
-public class JdkClassesMustNotBeInjectablesIT extends AbstractJavaPluginIT {
+class JdkClassesMustNotBeInjectablesIT extends AbstractJavaPluginIT {
 
     @Test
-    public void reportsInjectableJdkClasses() throws Exception {
+    void reportsInjectableJdkClasses() throws Exception {
 
         scanClasses(MyComponent.class);
 

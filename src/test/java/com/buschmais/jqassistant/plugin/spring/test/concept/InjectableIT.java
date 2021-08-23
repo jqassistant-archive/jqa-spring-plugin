@@ -19,10 +19,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class InjectableIT extends AbstractSpringIT {
+class InjectableIT extends AbstractSpringIT {
 
     @Test
-    public void beanMethod() throws Exception {
+    void beanMethod() throws Exception {
         scanClasses(ConfigurationWithBeanProducer.class);
         assertThat(applyConcept("spring-injection:BeanProducer").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
@@ -36,7 +36,7 @@ public class InjectableIT extends AbstractSpringIT {
     }
 
     @Test
-    public void injectionPoint() throws Exception {
+    void injectionPoint() throws Exception {
         scanClasses(ServiceWithConstructorInjection.class, ServiceWithFieldInjection.class);
         assertThat(applyConcept("spring-injection:InjectionPoint").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
@@ -53,7 +53,7 @@ public class InjectableIT extends AbstractSpringIT {
     }
 
     @Test
-    public void injectable() throws Exception {
+    void injectable() throws Exception {
         scanClasses(Application.class, ConfigurationWithBeanProducer.class, AnnotatedRepository.class, ImplementedRepository.class, Controller.class,
                 RestController.class, Service.class);
         assertThat(applyConcept("spring-injection:Injectable").getStatus(), equalTo(SUCCESS));

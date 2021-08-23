@@ -18,10 +18,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ComponentIT extends AbstractSpringIT {
+class ComponentIT extends AbstractSpringIT {
 
     @Test
-    public void configuration() throws Exception {
+    void configuration() throws Exception {
         scanClasses(ConfigurationWithBeanProducer.class);
         assertThat(applyConcept("spring-component:Configuration").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
@@ -31,7 +31,7 @@ public class ComponentIT extends AbstractSpringIT {
     }
 
     @Test
-    public void controller() throws Exception {
+    void controller() throws Exception {
         scanClasses(Service.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(FAILURE));
         clearConcepts();
@@ -43,7 +43,7 @@ public class ComponentIT extends AbstractSpringIT {
     }
 
     @Test
-    public void service() throws Exception {
+    void service() throws Exception {
         scanClasses(AnnotatedRepository.class);
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(FAILURE));
         clearConcepts();
@@ -56,7 +56,7 @@ public class ComponentIT extends AbstractSpringIT {
     }
 
     @Test
-    public void repository() throws Exception {
+    void repository() throws Exception {
         scanClasses(AnnotatedRepository.class, ImplementedRepository.class);
         assertThat(applyConcept("spring-component:Repository").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
@@ -67,7 +67,7 @@ public class ComponentIT extends AbstractSpringIT {
     }
 
     @Test
-    public void directComponentDependencies() throws Exception {
+    void directComponentDependencies() throws Exception {
         scanClasses(TestController1.class, TestService1.class, TestService2.class, TestRepository1.class, TestRepository2.class, TestComponent.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));

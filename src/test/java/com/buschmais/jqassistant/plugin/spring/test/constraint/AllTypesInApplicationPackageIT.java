@@ -21,17 +21,17 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorM
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
+class AllTypesInApplicationPackageIT extends AbstractJavaPluginIT {
 
     @Test
-    public void allTypesInsideApplicationPackage() throws Exception {
+    void allTypesInsideApplicationPackage() throws Exception {
         scanClassPathDirectory(getClassesDirectory(AllTypesInApplicationPackageIT.class));
         deletePackages(Application.class);
         assertThat(validateConstraint("spring-boot:AllTypesInApplicationPackage").getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void typeOutsideApplicationPackage() throws Exception {
+    void typeOutsideApplicationPackage() throws Exception {
         scanClassPathDirectory(getClassesDirectory(AllTypesInApplicationPackageIT.class));
         deletePackages(Controller.class);
         Result<Constraint> result = validateConstraint("spring-boot:AllTypesInApplicationPackage");

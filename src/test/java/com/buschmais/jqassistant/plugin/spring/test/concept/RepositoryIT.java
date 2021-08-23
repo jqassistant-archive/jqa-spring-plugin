@@ -12,10 +12,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class RepositoryIT extends AbstractSpringIT {
+class RepositoryIT extends AbstractSpringIT {
 
     @Test
-    public void annotatedRepository() throws Exception {
+    void annotatedRepository() throws Exception {
         scanClasses(ImplementedRepository.class);
         assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(FAILURE));
         clearConcepts();
@@ -28,7 +28,7 @@ public class RepositoryIT extends AbstractSpringIT {
     }
 
     @Test
-    public void implementedRepository() throws Exception {
+    void implementedRepository() throws Exception {
         scanClasses(AnnotatedRepository.class);
         assertThat(applyConcept("spring-data:ImplementedRepository").getStatus(), equalTo(FAILURE));
         clearConcepts();

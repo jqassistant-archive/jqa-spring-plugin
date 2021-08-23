@@ -25,10 +25,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 
-public class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPluginIT {
+class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPluginIT {
 
     @Test
-    public void constructorFieldsMustNotBeManipulated() throws Exception {
+    void constructorFieldsMustNotBeManipulated() throws Exception {
         // given
         scanClasses(ServiceImpl.class, Repository.class, RepositoryImpl.class);
         // when
@@ -50,7 +50,7 @@ public class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPlugi
     }
 
     @Test
-    public void configurationProperties() throws Exception {
+    void configurationProperties() throws Exception {
         // given
         scanClasses(SecurityProperties.class);
         // when
@@ -60,7 +60,7 @@ public class FieldsOfInjectablesMustNotBeManipulatedIT extends AbstractJavaPlugi
     }
 
     @Test
-    public void syntheticFields() throws Exception {
+    void syntheticFields() throws Exception {
         // given
         scanClasses(ServiceImpl.class, RepositoryImpl.class);
         store.beginTransaction();

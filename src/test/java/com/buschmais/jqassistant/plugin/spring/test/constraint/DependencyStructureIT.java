@@ -21,46 +21,46 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DependencyStructureIT extends AbstractJavaPluginIT {
+class DependencyStructureIT extends AbstractJavaPluginIT {
 
     private static final String CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES = "spring-component:ControllerMustOnlyDependOnServicesRepositories";
     private static final String CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES = "spring-component:ServiceMustOnlyDependOnServicesRepositories";
     private static final String CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES = "spring-component:RepositoryMustOnlyDependOnRepositories";
 
     @Test
-    public void validControllerDependencies() throws Exception {
+    void validControllerDependencies() throws Exception {
         scanClasses(TestController1.class, TestService1.class, TestRepository1.class, TestConfiguration.class, TestComponent.class);
         assertThat(validateConstraint(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void invalidControllerDependencies() throws Exception {
+    void invalidControllerDependencies() throws Exception {
         scanClasses(TestControllerWithInvalidDependencies.class, TestController1.class, TestConfiguration.class);
         verifyConstraintViolation(CONSTRAINT_ALLOWED_CONTROLLER_DEPENDENCIES, "Controller", TestControllerWithInvalidDependencies.class, TestController1.class,
                 TestConfiguration.class);
     }
 
     @Test
-    public void validServiceDependencies() throws Exception {
+    void validServiceDependencies() throws Exception {
         scanClasses(TestController1.class, TestService1.class, TestService2.class, TestRepository1.class, TestConfiguration.class, TestComponent.class);
         assertThat(validateConstraint(CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void invalidServiceDependencies() throws Exception {
+    void invalidServiceDependencies() throws Exception {
         scanClasses(TestServiceWithInvalidDependencies.class, TestRepository1.class, TestService1.class, TestController1.class, TestConfiguration.class);
         verifyConstraintViolation(CONSTRAINT_ALLOWED_SERVICE_DEPENDENCIES, "Service", TestServiceWithInvalidDependencies.class, TestController1.class,
                 TestConfiguration.class);
     }
 
     @Test
-    public void validRepositoryDependencies() throws Exception {
+    void validRepositoryDependencies() throws Exception {
         scanClasses(TestRepository1.class, TestRepository2.class, TestConfiguration.class, TestComponent.class);
         assertThat(validateConstraint(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES).getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void invalidRepositoryDependencies() throws Exception {
+    void invalidRepositoryDependencies() throws Exception {
         scanClasses(TestRepositoryWithInvalidDependencies.class, TestRepository1.class, TestService1.class, TestController1.class, TestConfiguration.class);
         verifyConstraintViolation(CONSTRAINT_ALLOWED_REPOSITORY_DEPENDENCIES, "Repository", TestRepositoryWithInvalidDependencies.class, TestService1.class,
                 TestController1.class, TestConfiguration.class);

@@ -17,10 +17,10 @@ import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAIL
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TransactionalMethodMustNotBeInvokedFromSameClassIT extends AbstractJavaPluginIT {
+class TransactionalMethodMustNotBeInvokedFromSameClassIT extends AbstractJavaPluginIT {
 
     @Test
-    public void transactionMethodsMustNotBeCalledDirectly() throws Exception {
+    void transactionMethodsMustNotBeCalledDirectly() throws Exception {
         scanClasses(TransactionalMethod.class);
         assertThat(validateConstraint("spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass").getStatus(), equalTo(FAILURE));
         store.beginTransaction();

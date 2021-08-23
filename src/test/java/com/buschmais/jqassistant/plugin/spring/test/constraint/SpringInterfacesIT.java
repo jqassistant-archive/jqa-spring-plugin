@@ -23,30 +23,30 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorM
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class SpringInterfacesIT extends AbstractJavaPluginIT {
+class SpringInterfacesIT extends AbstractJavaPluginIT {
 
     @Test
-    public void avoidInitializingBean() throws Exception {
+    void avoidInitializingBean() throws Exception {
         verifyConstraint(TestInitializingBean.class, "spring-injection:AvoidInitializingBean");
     }
 
     @Test
-    public void avoidDisposableBean() throws Exception {
+    void avoidDisposableBean() throws Exception {
         verifyConstraint(TestDisposableBean.class, "spring-injection:AvoidDisposableBean");
     }
 
     @Test
-    public void avoidBeanFactoryAware() throws Exception {
+    void avoidBeanFactoryAware() throws Exception {
         verifyConstraint(TestBeanFactoryAwareBean.class, "spring-injection:AvoidAwareInterfacesInFavorOfInjection");
     }
 
     @Test
-    public void avoidApplicationContextAware() throws Exception {
+    void avoidApplicationContextAware() throws Exception {
         verifyConstraint(TestApplicationContextAwareBean.class, "spring-injection:AvoidAwareInterfacesInFavorOfInjection");
     }
 
     @Test
-    public void avoidApplicationEventPublisherAwareBean() throws Exception {
+    void avoidApplicationEventPublisherAwareBean() throws Exception {
         verifyConstraint(TestApplicationEventPublisherAwareBean.class, "spring-injection:AvoidAwareInterfacesInFavorOfInjection");
     }
 

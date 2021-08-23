@@ -29,10 +29,10 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorM
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
+class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
 
     @Test
-    public void injectableCreatesInstance() throws Exception {
+    void injectableCreatesInstance() throws Exception {
         scanClasses("a", ControllerInstantiatingService.class, Service.class, ConfigurationWithBeanProducer.class, ConfigurationBean.class);
         Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeInstantiated");
         assertThat(result.getStatus(), equalTo(FAILURE));
@@ -48,14 +48,14 @@ public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
     }
 
     @Test
-    public void nonInjectableCreatesInstance() throws Exception {
+    void nonInjectableCreatesInstance() throws Exception {
         scanClasses("a", NonInjectableInstantiatingService.class, Service.class, ConfigurationWithBeanProducer.class, ConfigurationBean.class);
         Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeInstantiated");
         assertThat(result.getStatus(), equalTo(SUCCESS));
     }
 
     @Test
-    public void testClasses() throws Exception {
+    void testClasses() throws Exception {
         store.beginTransaction();
         JavaClassesDirectoryDescriptor jar = getArtifactDescriptor("a");
         jar.setType("jar");
@@ -69,7 +69,7 @@ public class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
     }
 
     @Test
-    public void configInstantiatesSubClassOfInjectable() throws Exception {
+    void configInstantiatesSubClassOfInjectable() throws Exception {
         scanClasses("a", AbstractConfigurationBean.class, ConfigurationBean.class, SubClassOfInjectable.class);
         Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeInstantiated");
         assertThat(result.getStatus(), equalTo(SUCCESS));
