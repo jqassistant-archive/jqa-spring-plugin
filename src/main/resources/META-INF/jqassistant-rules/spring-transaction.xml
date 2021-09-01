@@ -1,4 +1,6 @@
-<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/rule/schema/v1.4">
+<jqassistant-rules xmlns="http://schema.jqassistant.org/rule/v1.8"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://schema.jqassistant.org/rule/v1.8 https://schema.jqassistant.org/plugin/jqassistant-rule-v1.8.xsd">
 
     <group id="spring-transaction:Default">
         <includeConstraint refId="spring-transaction:TransactionalMethodMustNotBeInvokedFromSameClass"/>
@@ -71,4 +73,4 @@
         ]]></cypher>
     </concept>
 
-</jqa:jqassistant-rules>
+</jqassistant-rules>
