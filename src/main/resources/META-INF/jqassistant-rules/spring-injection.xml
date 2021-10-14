@@ -71,7 +71,7 @@
             RETURN
               type as Type, method as Method, injectable as Injectable
         ]]></cypher>
-        <report primaryColumn="method"/>
+        <report primaryColumn="Method"/>
     </constraint>
 
     <constraint id="spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent">
@@ -90,7 +90,7 @@
             RETURN
               type as Type, beanProducer as BeanProducer, injectable as Injectable
         ]]></cypher>
-        <report primaryColumn="beanProducer"/>
+        <report primaryColumn="BeanProducer"/>
     </constraint>
 
     <constraint id="spring-injection:BeanProducerMustNotBeInvokedDirectly">
@@ -107,9 +107,9 @@
               OR type:Generated
             )
             RETURN
-              type as Type, method as Method, beanType as BeanProducerType, beanProducer as BeanProducer, invokes.lineNumber as LineNumber
+              type as Type, method as Method, beanType as BeanProducerType, beanProducer as BeanProducer, invokes as Invokes
         ]]></cypher>
-        <report primaryColumn="method"/>
+        <report primaryColumn="Invokes"/>
     </constraint>
 
     <concept id="spring-injection:InjectionPoint">
@@ -147,7 +147,7 @@
             RETURN
               type as Type, field as Field
         ]]></cypher>
-        <report primaryColumn="field"/>
+        <report primaryColumn="Field"/>
     </constraint>
 
     <constraint id="spring-injection:InjectablesShouldBeHeldInFinalFields">
@@ -196,7 +196,7 @@
             RETURN
                injectable as Injectable, writes as WriteToInjectableField, field as Field
         ]]></cypher>
-        <report primaryColumn="Field"/>
+        <report primaryColumn="WriteToInjectableField"/>
     </constraint>
 
     <constraint id="spring-injection:AvoidInitializingBean">
