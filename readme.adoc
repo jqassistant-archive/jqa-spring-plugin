@@ -1,6 +1,6 @@
 = jQAssistant Spring Framework Plugin
 
-This is the Spring Framework Plugin of https://www.jqassistant.org[jQAssistant].
+This is the Spring Framework Plugin of https://jqassistant.org[jQAssistant].
 It provides pre-defined rules for projects using the http://www.spring.org/[Spring Framework], e.g.:
 
 * Spring Boot
@@ -30,7 +30,7 @@ It provides pre-defined rules for projects using the http://www.spring.org/[Spri
 * Transactions
 ** Disallow direct invocation of methods annotated with `@Transaction` from methods not annotated with that annotation within the same class
 
-For more information on jQAssistant see https://www.jqassistant.org[^].
+For more information on jQAssistant see https://jqassistant.org[^].
 
 == Usage
 
