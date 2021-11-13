@@ -21,7 +21,7 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescripto
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.notNullValue;
 
 class BeanProducerIT extends AbstractJavaPluginIT {
 
@@ -58,7 +58,7 @@ class BeanProducerIT extends AbstractJavaPluginIT {
         assertThat((MethodDescriptor) row.get("Method"), methodDescriptor(ServiceInvokingBeanProducer.class, "doSomething"));
         assertThat((TypeDescriptor) row.get("BeanProducerType"), typeDescriptor(ConfigurationWithBeanProducer.class));
         assertThat((MethodDescriptor) row.get("BeanProducer"), methodDescriptor(ConfigurationWithBeanProducer.class, "getConfiguration"));
-        assertThat((Integer) row.get("LineNumber"), greaterThan(0));
+        assertThat(row.get("Invokes"), notNullValue());
         store.commitTransaction();
     }
 }
