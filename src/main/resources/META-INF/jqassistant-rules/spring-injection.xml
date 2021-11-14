@@ -273,7 +273,7 @@
             RETURN
               type as Type, field as Field
         ]]></cypher>
-        <report primaryColumn="field"/>
+        <report primaryColumn="Field"/>
     </constraint>
 
     <constraint id="spring-injection:InjectablesMustNotBeAccessedStatically">
@@ -295,7 +295,7 @@
             RETURN
               type as Type, method as Method, field as Field
         ]]></cypher>
-        <report primaryColumn="method"/>
+        <report primaryColumn="Method"/>
     </constraint>
 
     <constraint id="spring-injection:JdkClassesMustNotBeInjectables">
