@@ -64,7 +64,6 @@
         <org.springframework.version>5.3.2</org.springframework.version>
         <org.springframework.boot_version>2.4.1</org.springframework.boot_version>
         <org.springframework.data_version>2.4.2</org.springframework.data_version>
-        <asciidoctor.toplevelid>spring-plugin</asciidoctor.toplevelid>
     </properties>
 
     <build>
