@@ -122,7 +122,7 @@
               or ((other:Service or other:Repository or other:Component) and not (other:Controller or other:Configuration))
             )
             RETURN
-              controller as Controller, collect(other) as InvalidDependencies
+              controller as Controller, other as InvalidDependency
         ]]></cypher>
     </constraint>
 
@@ -143,7 +143,7 @@
               or ((other:Service or other:Repository or other:Component) and not (other:Controller or other:Configuration))
             )
             RETURN
-              service as Service, collect(other) as InvalidDependencies
+              service as Service, other as InvalidDependency
         ]]></cypher>
     </constraint>
 
@@ -163,7 +163,7 @@
               or ((other:Repository or other:Component) and not (other:Controller or other:Service or other:Configuration))
             )
             RETURN
-              repository as Repository, collect(other) as InvalidDependencies
+              repository as Repository, other as InvalidDependency
         ]]></cypher>
     </constraint>
 

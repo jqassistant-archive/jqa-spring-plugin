@@ -3,6 +3,7 @@ package com.buschmais.jqassistant.plugin.spring.test.constraint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.buschmais.jqassistant.core.report.api.model.Result;
 import com.buschmais.jqassistant.core.rule.api.model.Constraint;
@@ -17,6 +18,7 @@ import static com.buschmais.jqassistant.core.analysis.test.matcher.ResultMatcher
 import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAILURE;
 import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCCESS;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -75,14 +77,20 @@ class DependencyStructureIT extends AbstractJavaPluginIT {
         Result<Constraint> result = constraintViolations.get(0);
         assertThat(result, result(constraint(constraintId)));
         List<Map<String, Object>> rows = result.getRows();
-        assertThat(rows.size(), equalTo(1));
-        Map<String, Object> row = rows.get(0);
-        TypeDescriptor repository = (TypeDescriptor) row.get(componentColumn);
-        assertThat(repository, typeDescriptor(component));
-        List<TypeDescriptor> invalidDependencies = (List<TypeDescriptor>) row.get("InvalidDependencies");
+        assertThat(rows.size(), equalTo(expectedInvalidDependencies.length));
+
+        Set<TypeDescriptor> components = rows.stream()
+            .map(row -> (TypeDescriptor) row.get(componentColumn))
+            .collect(toSet());
+        assertThat(components.size(), equalTo(1));
+        assertThat(components, hasItem(typeDescriptor(component)));
+
+        Set<TypeDescriptor> invalidDependencies = rows.stream()
+            .map(row -> (TypeDescriptor) row.get("InvalidDependency"))
+            .collect(toSet());
         assertThat(invalidDependencies.size(), equalTo(expectedInvalidDependencies.length));
-        for (Class<?> dependency : expectedInvalidDependencies) {
-            assertThat(invalidDependencies, hasItem(typeDescriptor(dependency)));
+        for (Class<?> expectedInvalidDependency : expectedInvalidDependencies) {
+            assertThat(invalidDependencies, hasItem(typeDescriptor(expectedInvalidDependency)));
         }
         store.commitTransaction();
     }
