@@ -322,6 +322,7 @@
               artifact:Test
               or t:Generated
               or t:Spring:Injectable
+              or exists(f.synthetic) // exclude synthetic inner class field referencing the outer class
             )
             WITH
               t, collect(DISTINCT fType.fqn) AS fields

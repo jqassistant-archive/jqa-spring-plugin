@@ -1,6 +1,10 @@
 
 = Spring Plugin
 
+== 1.12.0
+
+* Fixed false positives for constraint `spring-injection:InjectablesMustOnlyBeHeldInInjectables` for inner classes (https://github.com/jQAssistant/jqa-spring-plugin/issues/41[issue])
+
 == 1.10.0
 
 * Added constraint `spring-injection:BeanProducerMustNotBeInvokedDirectly`

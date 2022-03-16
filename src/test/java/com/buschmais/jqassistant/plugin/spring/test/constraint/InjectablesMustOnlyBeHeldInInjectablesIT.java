@@ -30,7 +30,8 @@ class InjectablesMustOnlyBeHeldInInjectablesIT extends AbstractJavaPluginIT {
             Injectable.class,
             InvalidComponent.class, ValidComponent.class,
             InvalidAbstractComponent.class, InvalidAbstractComponentImpl.class,
-            ValidAbstractComponent.class, ValidAbstractComponentImpl.class);
+            ValidAbstractComponent.class, ValidAbstractComponentImpl.class, ComponentWithInnerClass.class,
+            ComponentWithInnerClass.InnerClassUsingSomeMethodFromOuterClass.class);
 
         Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustOnlyBeHeldInInjectables");
 
@@ -87,4 +88,12 @@ class InjectablesMustOnlyBeHeldInInjectablesIT extends AbstractJavaPluginIT {
     static class Injectable {
     }
 
+    @Component
+    public class ComponentWithInnerClass {
+
+        private class InnerClassUsingSomeMethodFromOuterClass {
+
+        }
+
+    }
 }
