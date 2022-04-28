@@ -49,10 +49,12 @@ class FieldInjectionIT extends AbstractJavaPluginIT {
         assertThat(constraint.getStatus(), equalTo(FAILURE));
         store.beginTransaction();
         Map<String, Object> row = constraint.getRows().get(0);
-        TypeDescriptor injectableType = (TypeDescriptor) row.get("InjectableType");
-        assertThat(injectableType, typeDescriptor(ServiceWithConstructorInjection.class));
-        FieldDescriptor injectableField = (FieldDescriptor) row.get("InjectableField");
+        TypeDescriptor type = (TypeDescriptor) row.get("Type");
+        assertThat(type, typeDescriptor(ServiceWithConstructorInjection.class));
+        FieldDescriptor injectableField = (FieldDescriptor) row.get("Field");
         assertThat(injectableField, fieldDescriptor(ServiceWithConstructorInjection.class,"repository"));
+        TypeDescriptor injected = (TypeDescriptor) row.get("InjectedType");
+        assertThat(injected, typeDescriptor(Repository.class));
         store.commitTransaction();
 
         store.beginTransaction();
