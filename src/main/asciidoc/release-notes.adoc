@@ -3,6 +3,7 @@
 
 == 1.12.0
 
+* Added concepts `spring-mvc:ControllerAdvice` and `spring-mvc:RestControllerAdvice`
 * Improved the constraints `spring-component:ControllerMustOnlyDependOnServicesRepositories`, `spring-component:ServiceMustOnlyDependOnServicesRepositories` and `spring-component:RepositoryMustOnlyDependOnRepositories` to report one row per invalid dependency (https://github.com/jQAssistant/jqa-spring-plugin/issues/42[issue])
 * Fixed false positives for constraint `spring-injection:InjectablesMustOnlyBeHeldInInjectables` for inner classes (https://github.com/jQAssistant/jqa-spring-plugin/issues/41[issue])
 * Improved constraint `spring-injection:InjectablesShouldBeHeldInFinalFields` to return the `Type` declaring the `Field` and `InjectedType` as the injected field type.

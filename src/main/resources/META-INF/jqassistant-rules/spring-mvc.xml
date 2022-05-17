@@ -22,4 +22,41 @@
         ]]></cypher>
     </concept>
 
+    <concept id="spring-mvc:ControllerAdvice">
+        <providesConcept refId="spring-component:Component"/>
+        <providesConcept refId="spring-injection:Injectable"/>
+        <description>Labels all types annotated with "@org.springframework.web.bind.annotation.ControllerAdvice" with "Spring",
+            "ControllerAdvice", "Component" and "Injectable".
+        </description>
+        <cypher><![CDATA[
+            MATCH
+              (controllerAdvice:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+            WHERE
+              annotationType.fqn = 'org.springframework.web.bind.annotation.ControllerAdvice'
+            SET
+              controllerAdvice:Spring:ControllerAdvice:Component:Injectable
+            RETURN
+              controllerAdvice AS ControllerAdvice
+            ]]></cypher>
+    </concept>
+
+    <concept id="spring-mvc:RestControllerAdvice">
+        <providesConcept refId="spring-component:Component"/>
+        <providesConcept refId="spring-injection:Injectable"/>
+        <providesConcept refId="spring-mvc:ControllerAdvice"/>
+        <description>Labels all types annotated with "@org.springframework.web.bind.annotation.RestControllerAdvice" with "Spring",
+            "RestControllerAdvice", "ControllerAdvice", "Component" and "Injectable".
+        </description>
+        <cypher><![CDATA[
+            MATCH
+              (restControllerAdvice:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+            WHERE
+              annotationType.fqn = 'org.springframework.web.bind.annotation.RestControllerAdvice'
+            SET
+              restControllerAdvice:Spring:RestControllerAdvice:ControllerAdvice:Component:Injectable
+            RETURN
+              restControllerAdvice AS RestControllerAdvice
+            ]]></cypher>
+    </concept>
+
 </jqassistant-rules>

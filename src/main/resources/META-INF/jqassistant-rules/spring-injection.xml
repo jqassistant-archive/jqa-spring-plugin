@@ -167,7 +167,7 @@
             RETURN
               type AS Type, field AS Field, injectedType AS InjectedType
             ]]></cypher>
-        <report primaryColumn="InjectableField"/>
+        <report primaryColumn="Field"/>
     </constraint>
 
     <constraint id="spring-injection:FieldsOfInjectablesMustNotBeManipulated">
