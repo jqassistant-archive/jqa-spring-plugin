@@ -11,8 +11,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.injectables.Configuratio
 
 import org.junit.jupiter.api.Test;
 
-import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAILURE;
-import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.*;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -33,7 +32,7 @@ class ComponentIT extends AbstractSpringIT {
     @Test
     void controller() throws Exception {
         scanClasses(Service.class);
-        assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(FAILURE));
+        assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(WARNING));
         clearConcepts();
         scanClasses(Controller.class);
         assertThat(applyConcept("spring-component:Controller").getStatus(), equalTo(SUCCESS));
@@ -45,7 +44,7 @@ class ComponentIT extends AbstractSpringIT {
     @Test
     void service() throws Exception {
         scanClasses(AnnotatedRepository.class);
-        assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(FAILURE));
+        assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(WARNING));
         clearConcepts();
         scanClasses(Service.class);
         assertThat(applyConcept("spring-component:Service").getStatus(), equalTo(SUCCESS));
