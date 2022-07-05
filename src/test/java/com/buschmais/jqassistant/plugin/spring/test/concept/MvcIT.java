@@ -8,8 +8,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.components.Service;
 
 import org.junit.jupiter.api.Test;
 
-import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAILURE;
-import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.*;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -36,7 +35,7 @@ class MvcIT extends AbstractSpringIT {
 
     private void verify(Class<?> componentType, String conceptId, String expectedLabels) throws RuleException {
         scanClasses(Service.class);
-        assertThat(applyConcept(conceptId).getStatus(), equalTo(FAILURE));
+        assertThat(applyConcept(conceptId).getStatus(), equalTo(WARNING));
         clearConcepts();
         scanClasses(componentType);
         assertThat(applyConcept(conceptId).getStatus(), equalTo(SUCCESS));

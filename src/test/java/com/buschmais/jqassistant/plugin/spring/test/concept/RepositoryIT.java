@@ -5,8 +5,7 @@ import com.buschmais.jqassistant.plugin.spring.test.set.components.ImplementedRe
 
 import org.junit.jupiter.api.Test;
 
-import static com.buschmais.jqassistant.core.report.api.model.Result.Status.FAILURE;
-import static com.buschmais.jqassistant.core.report.api.model.Result.Status.SUCCESS;
+import static com.buschmais.jqassistant.core.report.api.model.Result.Status.*;
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -17,7 +16,7 @@ class RepositoryIT extends AbstractSpringIT {
     @Test
     void annotatedRepository() throws Exception {
         scanClasses(ImplementedRepository.class);
-        assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(FAILURE));
+        assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(WARNING));
         clearConcepts();
         scanClasses(AnnotatedRepository.class);
         assertThat(applyConcept("spring-data:AnnotatedRepository").getStatus(), equalTo(SUCCESS));
@@ -30,7 +29,7 @@ class RepositoryIT extends AbstractSpringIT {
     @Test
     void implementedRepository() throws Exception {
         scanClasses(AnnotatedRepository.class);
-        assertThat(applyConcept("spring-data:ImplementedRepository").getStatus(), equalTo(FAILURE));
+        assertThat(applyConcept("spring-data:ImplementedRepository").getStatus(), equalTo(WARNING));
         clearConcepts();
         scanClasses(ImplementedRepository.class);
         assertThat(applyConcept("spring-data:ImplementedRepository").getStatus(), equalTo(SUCCESS));
