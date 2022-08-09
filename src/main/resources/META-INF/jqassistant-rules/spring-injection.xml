@@ -56,11 +56,13 @@
         <description>If the constructor of an Injectable is called from another Injectable, then the caller must be a BeanProducer.</description>
         <cypher><![CDATA[
             MATCH
-              (injectable:Injectable:Type)-[:DECLARES]->(constructor:Constructor),
               (artifact:Artifact)-[:CONTAINS]->(type:Injectable:Type)-[:DECLARES]->(method:Method),
-              shortestPath((method)-[:INVOKES*]->(constructor))
+              (method)-[:INVOKES*]->(chainedMethod:Method)-[:INVOKES*]->(constructor:Constructor),
+              (constructor)-[:DECLARES]-(injectable:Injectable:Type),
+              (chainedMethod)-[:DECLARES]-(chainedType:Type)
             WHERE NOT (
               artifact:Test
+              OR chainedType:Generated
               OR type:Generated
               OR method:Spring:BeanProducer
               OR (
@@ -69,7 +71,7 @@
               )
             )
             RETURN
-              type as Type, method as Method, injectable as Injectable
+              DISTINCT type AS Type, method AS Method, injectable AS Injectable
         ]]></cypher>
         <report primaryColumn="Method"/>
     </constraint>
