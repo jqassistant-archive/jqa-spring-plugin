@@ -17,6 +17,7 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescripto
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class InjectableIT extends AbstractSpringIT {
@@ -55,7 +56,7 @@ class InjectableIT extends AbstractSpringIT {
     @Test
     void injectable() throws Exception {
         scanClasses(Application.class, ConfigurationWithBeanProducer.class, AnnotatedRepository.class, ImplementedRepository.class, Controller.class,
-                RestController.class, Service.class);
+                RestController.class, Service.class, AnnotatedAnnotation.class);
         assertThat(applyConcept("spring-injection:Injectable").getStatus(), equalTo(SUCCESS));
         store.beginTransaction();
         List<Object> injectables = query("MATCH (i:Type:Spring:Injectable) RETURN i").getColumn("i");
@@ -68,6 +69,7 @@ class InjectableIT extends AbstractSpringIT {
         assertThat(injectables, hasItem(typeDescriptor(Controller.class)));
         assertThat(injectables, hasItem(typeDescriptor(RestController.class)));
         assertThat(injectables, hasItem(typeDescriptor(Service.class)));
+        assertThat(injectables, not(hasItem(typeDescriptor(AnnotatedAnnotation.class))));
         store.commitTransaction();
     }
 
