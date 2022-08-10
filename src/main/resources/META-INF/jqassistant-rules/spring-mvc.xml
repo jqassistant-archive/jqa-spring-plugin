@@ -14,7 +14,8 @@
             MATCH
               (restController:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.web.bind.annotation.RestController"
+              NOT restController:Annotation
+              AND annotationType.fqn = "org.springframework.web.bind.annotation.RestController"
             SET
               restController:Spring:RestController:Controller:Component:Injectable
             RETURN

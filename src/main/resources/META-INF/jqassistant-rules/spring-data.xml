@@ -13,7 +13,8 @@
             MATCH
               (repository:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn = "org.springframework.stereotype.Repository"
+              NOT repository:Annotation
+              AND annotationType.fqn = "org.springframework.stereotype.Repository"
             SET
               repository:Spring:Repository:Component:Injectable
             RETURN

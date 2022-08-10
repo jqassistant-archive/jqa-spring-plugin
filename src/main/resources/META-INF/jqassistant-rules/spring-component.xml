@@ -20,7 +20,8 @@
             MATCH
               (component:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn in [
+              NOT component:Annotation
+              AND annotationType.fqn in [
                 "org.springframework.stereotype.Component",
                 "org.springframework.web.bind.annotation.ControllerAdvice"
               ]
@@ -41,7 +42,8 @@
             MATCH
               (controller:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn in [
+              NOT controller:Annotation
+              AND annotationType.fqn in [
                 "org.springframework.stereotype.Controller"
               ]
             SET
@@ -61,7 +63,8 @@
             MATCH
               (service:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn in [
+              NOT service:Annotation
+              AND annotationType.fqn in [
                 "org.springframework.stereotype.Service"
               ]
             SET
@@ -93,7 +96,8 @@
             MATCH
               (configuration:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
             WHERE
-              annotationType.fqn in [
+              NOT configuration:Annotation
+              AND annotationType.fqn in [
                 "org.springframework.context.annotation.Configuration",
                 "org.springframework.boot.autoconfigure.SpringBootApplication",
                 "org.springframework.data.web.config.SpringDataWebConfigurationMixin"
