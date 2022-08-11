@@ -57,12 +57,10 @@
         <cypher><![CDATA[
             MATCH
               (artifact:Artifact)-[:CONTAINS]->(type:Injectable:Type)-[:DECLARES]->(method:Method),
-              (method)-[:INVOKES*]->(chainedMethod:Method)-[:INVOKES*]->(constructor:Constructor),
-              (constructor)-[:DECLARES]-(injectable:Injectable:Type),
-              (chainedMethod)-[:DECLARES]-(chainedType:Type)
+              p = (method)-[:INVOKES*]->(constructor:Constructor),
+              (constructor)-[:DECLARES]-(injectable:Injectable:Type)
             WHERE NOT (
               artifact:Test
-              OR chainedType:Generated
               OR type:Generated
               OR method:Spring:BeanProducer
               OR (
@@ -70,6 +68,14 @@
                 AND (type)-[:EXTENDS*0..]->(injectable)
               )
             )
+            WITH artifact, type, method, injectable, relationships(p) AS invocations
+            UNWIND invocations AS invocation
+            MATCH
+              (invokerMethod:Method)-[invocation]->(),
+              (invokerType:Type)-[:DECLARES]->(invokerMethod)
+            WITH artifact, type, method, injectable, collect(DISTINCT invokerType) AS invokerTypes
+            WHERE NOT
+              any(invokerType IN invokerTypes WHERE invokerType:Generated)
             RETURN
               DISTINCT type AS Type, method AS Method, injectable AS Injectable
         ]]></cypher>

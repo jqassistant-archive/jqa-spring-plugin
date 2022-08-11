@@ -11,6 +11,7 @@ import com.buschmais.jqassistant.plugin.java.api.model.JavaClassesDirectoryDescr
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ConfigurationWithBeanProducer;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.ControllerInstantiatingService;
+import com.buschmais.jqassistant.plugin.spring.test.set.injectables.GeneratedControllerInstantiatingService;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.NonInjectableInstantiatingService;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.Service;
 import com.buschmais.jqassistant.plugin.spring.test.set.injectables.subclass.AbstractConfigurationBean;
@@ -33,7 +34,8 @@ class InjectablesMustNotBeInstatiatedIT extends AbstractJavaPluginIT {
 
     @Test
     void injectableCreatesInstance() throws Exception {
-        scanClasses("a", ControllerInstantiatingService.class, Service.class, ConfigurationWithBeanProducer.class, ConfigurationBean.class);
+        scanClasses("a", ControllerInstantiatingService.class, GeneratedControllerInstantiatingService.class,
+                Service.class, ConfigurationWithBeanProducer.class, ConfigurationBean.class);
         Result<Constraint> result = validateConstraint("spring-injection:InjectablesMustNotBeInstantiated");
         assertThat(result.getStatus(), equalTo(FAILURE));
         store.beginTransaction();
