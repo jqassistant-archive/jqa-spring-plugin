@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.buschmais.jqassistant.core.report.api.model.Result;
 import com.buschmais.jqassistant.core.rule.api.model.Constraint;
+import com.buschmais.jqassistant.plugin.java.api.model.InvokesDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.MethodDescriptor;
 import com.buschmais.jqassistant.plugin.java.api.model.TypeDescriptor;
 import com.buschmais.jqassistant.plugin.java.test.AbstractJavaPluginIT;
@@ -21,26 +22,30 @@ import static com.buschmais.jqassistant.plugin.java.test.matcher.MethodDescripto
 import static com.buschmais.jqassistant.plugin.java.test.matcher.TypeDescriptorMatcher.typeDescriptor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.instanceOf;
 
 class BeanProducerIT extends AbstractJavaPluginIT {
 
     @Test
     public void beanProducerInConfigurationComponent() throws Exception {
         scanClasses(ConfigurationWithBeanProducer.class);
-        assertThat(validateConstraint("spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent").getStatus(), equalTo(SUCCESS));
+        assertThat(
+            validateConstraint("spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent").getStatus(),
+            equalTo(SUCCESS));
     }
 
     @Test
     void beanProducerInServiceComponent() throws Exception {
         scanClasses(ServiceWithBeanProducer.class);
-        Result<Constraint> result = validateConstraint("spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent");
+        Result<Constraint> result = validateConstraint(
+            "spring-injection:BeanProducerMustBeDeclaredInConfigurationComponent");
         store.beginTransaction();
         assertThat(result.getStatus(), equalTo(FAILURE));
         List<Map<String, Object>> rows = result.getRows();
         assertThat(rows.size(), equalTo(1));
         Map<String, Object> row = rows.get(0);
-        assertThat((MethodDescriptor) row.get("BeanProducer"), methodDescriptor(ServiceWithBeanProducer.class, "getBean"));
+        assertThat((MethodDescriptor) row.get("BeanProducer"),
+            methodDescriptor(ServiceWithBeanProducer.class, "getBean"));
         assertThat((TypeDescriptor) row.get("Injectable"), typeDescriptor(ConfigurationBean.class));
         store.commitTransaction();
     }
@@ -55,10 +60,13 @@ class BeanProducerIT extends AbstractJavaPluginIT {
         assertThat(rows.size(), equalTo(1));
         Map<String, Object> row = rows.get(0);
         assertThat((TypeDescriptor) row.get("Type"), typeDescriptor(ServiceInvokingBeanProducer.class));
-        assertThat((MethodDescriptor) row.get("Method"), methodDescriptor(ServiceInvokingBeanProducer.class, "doSomething"));
+        Object invokes = row.get("Invocation");
+        assertThat(invokes, instanceOf(InvokesDescriptor.class));
+        assertThat(((InvokesDescriptor) invokes).getInvokingMethod(),
+            methodDescriptor(ServiceInvokingBeanProducer.class, "doSomething"));
         assertThat((TypeDescriptor) row.get("BeanProducerType"), typeDescriptor(ConfigurationWithBeanProducer.class));
-        assertThat((MethodDescriptor) row.get("BeanProducer"), methodDescriptor(ConfigurationWithBeanProducer.class, "getConfiguration"));
-        assertThat(row.get("Invokes"), notNullValue());
+        assertThat((MethodDescriptor) row.get("BeanProducer"),
+            methodDescriptor(ConfigurationWithBeanProducer.class, "getConfiguration"));
         store.commitTransaction();
     }
 }

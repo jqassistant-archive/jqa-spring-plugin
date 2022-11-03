@@ -48,35 +48,38 @@ class FieldInjectionIT extends AbstractJavaPluginIT {
 
         assertThat(constraint.getStatus(), equalTo(FAILURE));
         store.beginTransaction();
-        Map<String, Object> row = constraint.getRows().get(0);
+        Map<String, Object> row = constraint.getRows()
+            .get(0);
         TypeDescriptor type = (TypeDescriptor) row.get("Type");
         assertThat(type, typeDescriptor(ServiceWithConstructorInjection.class));
         FieldDescriptor injectableField = (FieldDescriptor) row.get("Field");
-        assertThat(injectableField, fieldDescriptor(ServiceWithConstructorInjection.class,"repository"));
-        TypeDescriptor injected = (TypeDescriptor) row.get("InjectedType");
-        assertThat(injected, typeDescriptor(Repository.class));
+        assertThat(injectableField, fieldDescriptor(ServiceWithConstructorInjection.class, "repository"));
         store.commitTransaction();
 
         store.beginTransaction();
-        for (FieldDescriptor field : query("MATCH (:Injectable)-[:DECLARES]->(field:Field) RETURN field").<FieldDescriptor>getColumn("field")) {
+        for (FieldDescriptor field : query(
+            "MATCH (:Injectable)-[:DECLARES]->(field:Field) RETURN field").<FieldDescriptor>getColumn("field")) {
             field.setSynthetic(true);
         }
         store.commitTransaction();
 
-        assertThat(validateConstraint("spring-injection:InjectablesShouldBeHeldInFinalFields").getStatus(), equalTo(SUCCESS));
+        assertThat(validateConstraint("spring-injection:InjectablesShouldBeHeldInFinalFields").getStatus(),
+            equalTo(SUCCESS));
     }
 
     @Test
     void doesNotRejectFinalInjectableField() throws Exception {
         scanClasses(SomeComponent.class);
 
-        assertThat(validateConstraint("spring-injection:InjectablesShouldBeHeldInFinalFields").getStatus(), is(SUCCESS));
+        assertThat(validateConstraint("spring-injection:InjectablesShouldBeHeldInFinalFields").getStatus(),
+            is(SUCCESS));
     }
 
     private void verifyConstraintResult(Class<?> type, String fieldName) throws Exception {
         assertThat(validateConstraint("spring-injection:FieldInjectionIsNotAllowed").getStatus(), equalTo(FAILURE));
         store.beginTransaction();
-        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportPlugin.getConstraintResults().values());
+        List<Result<Constraint>> constraintViolations = new ArrayList<>(reportPlugin.getConstraintResults()
+            .values());
         assertThat(constraintViolations.size(), equalTo(1));
         Result<Constraint> result = constraintViolations.get(0);
         assertThat(result, result(constraint("spring-injection:FieldInjectionIsNotAllowed")));

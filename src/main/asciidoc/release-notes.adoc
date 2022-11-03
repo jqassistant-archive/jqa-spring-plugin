@@ -1,6 +1,10 @@
 
 = Spring Plugin
 
+== 1.12.1
+
+* Removed redundant result columns from constraints `spring-injection:BeanProducerMustNotBeInvokedDirectly` and `spring-injection:InjectablesShouldBeHeldInFinalFields`
+
 == 1.12.0
 
 * Added concepts `spring-mvc:ControllerAdvice` and `spring-mvc:RestControllerAdvice`
