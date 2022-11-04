@@ -109,7 +109,7 @@
             RETURN
               type as Type, invokes as Invocation, beanType as BeanProducerType, beanProducer as BeanProducer
         ]]></cypher>
-        <report primaryColumn="Invokes"/>
+        <report primaryColumn="Invocation"/>
     </constraint>
 
     <concept id="spring-injection:InjectionPoint">
