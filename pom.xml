@@ -61,9 +61,7 @@
     <properties>
         <jqa-java-plugin.version>1.13.0-SNAPSHOT</jqa-java-plugin.version>
         <jqa-plugin-common.version>1.13.0-SNAPSHOT</jqa-plugin-common.version>
-        <org.springframework.version>5.3.23</org.springframework.version>
         <org.springframework.boot_version>2.7.5</org.springframework.boot_version>
-        <org.springframework.data_version>2.4.2</org.springframework.data_version>
     </properties>
 
     <build>
@@ -93,6 +91,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${org.springframework.boot_version}</version>
+                <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
@@ -155,25 +154,11 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>${org.springframework.boot_version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>${org.springframework.boot_version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <version>${org.springframework.boot_version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${org.springframework.boot_version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
