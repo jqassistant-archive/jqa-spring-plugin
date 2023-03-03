@@ -1,5 +1,7 @@
 = jQAssistant Spring Framework Plugin
 
+NOTE:: With jQAssistant 2.0.0, this plugin has been removed from the core-distribution. It is now available at https://github.com/jqassistant-plugin/jqassistant-spring-plugin[jqassistant-spring-plugin]
+
 This is the Spring Framework Plugin of https://jqassistant.org[jQAssistant].
 It provides pre-defined rules for projects using the http://www.spring.org/[Spring Framework], e.g.:
 
